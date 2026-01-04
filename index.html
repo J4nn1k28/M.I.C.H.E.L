@@ -139,6 +139,26 @@
 
         .boat-icon { font-size: 26px; color: #facc15; text-shadow: 0 0 10px #000; transition: transform 0.1s linear; }
         body.day-mode .boat-icon { color: #2563eb; text-shadow: 0 0 5px #fff; }
+
+        /* === SYSTEM NACHRICHTEN (Ersatz für Alert) === */
+        #sys-msg-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 9000;
+            justify-content: center; align-items: center; backdrop-filter: blur(2px);
+        }
+        .sys-msg-box {
+            background: var(--panel); border: 2px solid var(--accent);
+            padding: 25px; border-radius: 12px; text-align: center;
+            width: 80%; max-width: 350px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        body.day-mode .sys-msg-box { background: #ffffff; color: #0f172a; border-color: var(--accent); }
+        
+        .sys-msg-btn {
+            background: var(--accent); color: #fff; border: none;
+            padding: 12px 25px; border-radius: 6px; font-weight: bold;
+            font-size: 1em; margin-top: 20px; width: 100%;
+        }
+
     </style>
 </head>
 <body>
@@ -243,6 +263,14 @@
         <input type="number" id="sar-min" value="0" min="0">
         <button class="modal-btn primary" onclick="startSar()">BERECHNEN</button>
         <button class="modal-btn" onclick="closeModal()">ABBRUCH</button>
+    </div>
+
+    <div id="sys-msg-overlay">
+        <div class="sys-msg-box">
+            <h3 id="sys-msg-title" style="margin-top:0">HINWEIS</h3>
+            <p id="sys-msg-text" style="font-size: 1.1em; line-height: 1.4;">--</p>
+            <button class="sys-msg-btn" onclick="closeSysMsg()">VERSTANDEN</button>
+        </div>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -355,9 +383,11 @@ VB2#DE__508P# #N#Do# 1. 1.2026#21:20# 3.58 #
                 { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 }
             );
         } else {
-            alert("Geolocation nicht unterstützt");
+            showSysMsg("Dein Browser unterstützt kein GPS.", "FEHLER");
         }
     }
+
+    
 
     function buildGraph() {
         graph = {};
@@ -436,7 +466,7 @@ VB2#DE__508P# #N#Do# 1. 1.2026#21:20# 3.58 #
             autoCenter = false; 
             document.getElementById('btn-center').classList.remove('active');
             document.getElementById('map').style.transform = `rotate(0deg)`;
-            alert("Klicke jetzt auf dein ZIEL.");
+            showSysMsg("Klicke jetzt auf die Karte, um dein ZIEL zu setzen.", "NAVIGATION START");
         } else {
             stopNavigation();
         }
@@ -682,6 +712,17 @@ VB2#DE__508P# #N#Do# 1. 1.2026#21:20# 3.58 #
         }
     }
 
+    // Ersetzt den nativen alert()
+    function showSysMsg(text, title="NAVIGATION") {
+        document.getElementById('sys-msg-text').innerText = text;
+        document.getElementById('sys-msg-title').innerText = title;
+        document.getElementById('sys-msg-overlay').style.display = 'flex';
+    }
+
+    function closeSysMsg() {
+        document.getElementById('sys-msg-overlay').style.display = 'none';
+    }
+
     // --- UI HELPERS ---
     
     // 0 = Dark (Default), 1 = Light (Day), 2 = Night (Red)
@@ -768,7 +809,7 @@ VB2#DE__508P# #N#Do# 1. 1.2026#21:20# 3.58 #
             document.getElementById('btn-sar-main').innerText = "SAR START";
             document.getElementById('btn-sar-main').style.background = "var(--alert)";
         } else {
-            alert("Klicke auf die Position des Vorfalls.");
+            showSysMsg("Klicke jetzt auf die Karte, wo die Person zuletzt gesehen wurde.", "SAR EINSATZ");
             map.once('click', e => {
                 sarPt = e.latlng;
                 document.getElementById('sar-modal').style.display='block';
