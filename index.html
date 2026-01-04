@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>M.I.C.H.E.L</title>
-    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#000000">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -139,7 +142,7 @@
     </style>
 </head>
 <body>
-
+    
     <div id="nav-hud">
         <div class="hud-grid">
             <div><span class="hud-val" id="hud-sog">--</span><br><span class="label">KN</span></div>
@@ -160,6 +163,7 @@
         
         <div class="fab-container">
             <div id="btn-night" class="btn-fab" onclick="toggleNight()">🌙</div>
+            <div id="btn-full" class="btn-fab" onclick="toggleFullscreen()">⛶</div>
             <div id="btn-loc" class="btn-fab" onclick="locateUser()">📍</div>
             <div id="btn-center" class="btn-fab active" onclick="toggleAutoCenter()">🎯</div>
             <div id="btn-flow" class="btn-fab active" onclick="toggleFlow()">🌊</div>
@@ -659,6 +663,32 @@ VB2#DE__508P# #N#Do# 1. 1.2026#21:20# 3.58 #
     
     // 0 = Dark (Default), 1 = Light (Day), 2 = Night (Red)
     let currentTheme = 0; 
+    
+    function toggleFullscreen() {
+        const doc = document.documentElement;
+        const btn = document.getElementById('btn-full');
+        
+        // Prüfen, ob wir schon im Vollbild sind
+        const isFull = document.fullscreenElement || document.webkitFullscreenElement;
+
+        if (!isFull) {
+            // Vollbild starten (mit Fallback für Safari/iOS 'webkit')
+            if (doc.requestFullscreen) {
+                doc.requestFullscreen();
+            } else if (doc.webkitRequestFullscreen) {
+                doc.webkitRequestFullscreen();
+            }
+            btn.classList.add('active'); // Button leuchten lassen
+        } else {
+            // Vollbild beenden
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            }
+            btn.classList.remove('active');
+        }
+    }
 
     function toggleNight() { 
         currentTheme = (currentTheme + 1) % 3; // Zyklus: 0 -> 1 -> 2 -> 0
