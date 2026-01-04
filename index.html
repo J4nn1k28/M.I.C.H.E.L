@@ -317,11 +317,8 @@ VB2#DE__508P# #N#Do# 1. 1.2026#21:20# 3.58 #
     function initMap() {
         map = L.map('map', {zoomControl: false, attributionControl: false}).setView([53.535, 9.980], 13);
         
-        // Base Layer in Variable speichern für Theme-Wechsel
-        mapBaseLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { 
-            maxZoom: 19 
-        }).addTo(map);
-
+        // Base Layers
+        mapBaseLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
         L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png', { opacity: 0.9 }).addTo(map);
 
         routeLayer = L.layerGroup().addTo(map);
@@ -329,19 +326,37 @@ VB2#DE__508P# #N#Do# 1. 1.2026#21:20# 3.58 #
         myPosLayer = L.layerGroup().addTo(map);
 
         map.on('click', onMapClick);
-        
-        // GPS
-        map.locate({setView: false, watch: true, enableHighAccuracy: true});
-        map.on('locationfound', e => { 
-            myPos = e.latlng;
-            if(e.speed) currentSpeed = e.speed * 1.94; // m/s to kn
-            if(e.heading) boatHeading = e.heading;
-            drawBoat();
-            
-            // Only center if button is active
-            if(autoCenter) map.panTo(myPos);
+
+        // FEATURE: Auto-Center ausschalten, wenn der User die Karte bewegt
+        map.on('dragstart', function() {
+            if(autoCenter) toggleAutoCenter(); // Schaltet Button aus, wenn man manuell wischt
         });
-        map.on('locationerror', e => console.log("GPS Err", e));
+        
+        // NEUE GPS LOGIK (Native Browser API statt Leaflet Helper)
+        if (navigator.geolocation) {
+            navigator.geolocation.watchPosition(
+                (pos) => {
+                    myPos = L.latLng(pos.coords.latitude, pos.coords.longitude);
+                    
+                    // Umrechnung m/s in Knoten
+                    if(pos.coords.speed !== null) currentSpeed = pos.coords.speed * 1.94384; 
+                    // Kurs übernehmen (falls verfügbar, sonst alten behalten)
+                    if(pos.coords.heading !== null && !isNaN(pos.coords.heading)) boatHeading = pos.coords.heading;
+                    
+                    drawBoat();
+                    
+                    // Hier ist die strikte Kontrolle: Nur zentrieren, wenn Variable true ist
+                    if(autoCenter) {
+                        // animate: true sorgt für sanftes Gleiten statt hartem Sprung
+                        map.panTo(myPos, {animate: true});
+                    }
+                },
+                (err) => { console.error("GPS Error", err); },
+                { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 }
+            );
+        } else {
+            alert("Geolocation nicht unterstützt");
+        }
     }
 
     function buildGraph() {
@@ -541,14 +556,22 @@ VB2#DE__508P# #N#Do# 1. 1.2026#21:20# 3.58 #
     }
 
     function drawBoat() {
-        if(myPosLayer) myPosLayer.clearLayers();
-        const icon = L.divIcon({
-            className: 'boat-wrap',
-            html: '<i class="fa-solid fa-location-arrow boat-icon"></i>',
-            iconSize: [30, 30],
-            iconAnchor: [15, 15]
-        });
-        boatMarker = L.marker(myPos, {icon: icon, zIndexOffset: 1000}).addTo(myPosLayer);
+        // Wenn noch kein Marker da ist -> Erstellen
+        if(!boatMarker) {
+             const icon = L.divIcon({
+                className: 'boat-wrap',
+                html: '<i class="fa-solid fa-location-arrow boat-icon"></i>',
+                iconSize: [30, 30],
+                iconAnchor: [15, 15]
+            });
+            // Marker erstellen und global speichern
+            boatMarker = L.marker(myPos, {icon: icon, zIndexOffset: 1000}).addTo(myPosLayer);
+        } else {
+            // Wenn schon da -> Nur Position updaten (KEIN Flackern mehr)
+            boatMarker.setLatLng(myPos);
+        }
+        
+        // Rotation des Icons anpassen
         const iconEl = document.querySelector('.boat-icon');
         if(iconEl) iconEl.style.transform = `rotate(${boatHeading - 45}deg)`;
     }
@@ -663,7 +686,7 @@ VB2#DE__508P# #N#Do# 1. 1.2026#21:20# 3.58 #
     
     // 0 = Dark (Default), 1 = Light (Day), 2 = Night (Red)
     let currentTheme = 0; 
-    
+
     function toggleFullscreen() {
         const doc = document.documentElement;
         const btn = document.getElementById('btn-full');
