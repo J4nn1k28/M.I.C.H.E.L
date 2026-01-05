@@ -265,7 +265,30 @@
 
     <div id="view-status" class="view-section">
         <div class="info-container">
-            <div class="data-card">
+          <div class="data-card" style="border-left: 3px solid #facc15;">
+            <div class="card-header">EINSATZMITTEL & NAVIGATION</div>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                
+                <div>
+                    <span class="label">EINHEIT WÄHLEN</span>
+                    <select id="opt-boat" onchange="updateFleetSettings()" style="width:100%; padding:10px; background:#000; color:#fff; border:1px solid var(--border); border-radius:4px; font-weight:bold;">
+                        </select>
+                </div>
+
+                <div>
+                    <span class="label">ROUTING STARTPUNKT</span>
+                    <select id="opt-start" onchange="updateFleetSettings()" style="width:100%; padding:10px; background:#000; color:#fff; border:1px solid var(--border); border-radius:4px;">
+                        <option value="berth">⚓ AB ANLEGER (Heimathafen)</option>
+                        <option value="gps">📍 AB STANDORT (GPS Gerät)</option>
+                    </select>
+                </div>
+
+                <div id="current-boat-info" style="font-size:0.8em; color:var(--dim); margin-top:5px;">
+                    </div>
+            </div>
+          </div>  
+          
+          <div class="data-card">
                 <div class="card-header">WETTER LAGE</div>
                 <div class="grid-3">
                     <div><span class="label">LUFT</span><span id="val-air" class="val-big">--°</span></div>
@@ -3580,6 +3603,10 @@
   "w813": [
     53.52057,
     9.89695
+  ],
+  "w814": [       //Liegeplatz KLB F3917
+    53.52759,
+    10.05526
   ]
 };
 const connections = [
@@ -10684,7 +10711,16 @@ VB2#DE__508P# #H#Do#31.12.2026#22:16# 6.89 # #365#+ 1:00#  27171#   1#2461406.38
     let isEmergency = false; 
     let currentLevelNHN = -5.0; // Startwert (wird berechnet)
     let globalTides = [];       // Globale Liste der Tiden
+
+    const fleetConfig = [
+        { id: "f3917", name: "Kleinboot F3917", homeWp: "w814" },
+        // Hier können später weitere Boote rein:
+        // { id: "f_res", name: "Reserveboot", homeWp: "w1" } 
+    ];
     
+    let currentBoat = fleetConfig[0]; // Standard: F3917
+    let startFromBerth = true;        // Standard: Ab Anleger
+
     // WICHTIG: Hier nur deklarieren, NICHT initialisieren!
     let lockLayer; 
     let showLocks = false;
@@ -10692,6 +10728,7 @@ VB2#DE__508P# #H#Do#31.12.2026#22:16# 6.89 # #365#+ 1:00#  27171#   1#2461406.38
     // INIT
     window.onload = function() {
         initMap();
+        initFleet(); // <--- NEU
         buildGraph();
         
         // Data Fetching
@@ -10718,6 +10755,7 @@ VB2#DE__508P# #H#Do#31.12.2026#22:16# 6.89 # #365#+ 1:00#  27171#   1#2461406.38
         currentLayer = L.layerGroup().addTo(map);
         myPosLayer = L.layerGroup().addTo(map);
         lockLayer = L.layerGroup().addTo(map); // Hier ist es sicher!
+        homeMarkerLayer.addTo(map); // <--- NEU: Layer für den Heimathafen
 
         map.on('click', onMapClick);
 
@@ -11317,26 +11355,68 @@ function buildGraph() {
 
     function onMapClick(e) {
         if(document.getElementById('sar-modal').style.display === 'block') return;
-        if(!myPos) { myPos = e.latlng; drawBoat(); }
+        
+        // GPS Fallback nur setzen, wenn wir keinen Anleger-Start haben
+        if(!myPos && !startFromBerth) { 
+            // Optional: Dummy Position setzen oder Warnung
+            // myPos = e.latlng; drawBoat(); 
+            showSysMsg("Kein GPS Signal! Bitte 'Ab Anleger' wählen oder warten.", "GPS FEHLER");
+            return;
+        }
 
         if(navMode) {
-            // RESULTAT IST JETZT EIN OBJEKT
-            const result = calculateRoute(myPos, e.latlng);
+            let startPos = null;
+
+            // --- ENTSCHEIDUNG: ANLEGER ODER GPS? ---
+            if (startFromBerth) {
+                // Koordinaten aus den Waypoints holen
+                const homeCoords = waypoints[currentBoat.homeWp];
+                if (homeCoords) {
+                    startPos = L.latLng(homeCoords[0], homeCoords[1]);
+                } else {
+                    showSysMsg("Fehler: Heimathafen-Koordinaten nicht gefunden!", "SYSTEM FEHLER");
+                    return;
+                }
+            } else {
+                // GPS nutzen
+                startPos = myPos;
+            }
+            // ---------------------------------------
+
+            // Routing starten
+            const result = calculateRoute(startPos, e.latlng);
             navPath = result.path;
-            navRouteNames = result.names; // Namen speichern
+            navRouteNames = result.names;
             
             nextWpIndex = 1;
 
             routeLayer.clearLayers();
+            
+            // Startpunkt visualisieren (anders als Schiff)
+            if(startFromBerth) {
+                L.circleMarker(startPos, {color:'#facc15', radius:5, fillColor:'#000', fillOpacity:1}).addTo(routeLayer);
+            }
+
+            // Route zeichnen
             L.polyline(navPath, {color: '#ef4444', weight: 6, opacity: 0.9}).addTo(routeLayer);
             L.circleMarker(e.latlng, {color:'#ef4444', radius:8}).addTo(routeLayer);
 
             document.getElementById('nav-hud').style.display = 'block';
-            autoCenter = true;
-            document.getElementById('btn-center').classList.add('active');
-            map.getContainer().style.cursor = '';
             
-            // Sofort Update triggern
+            // AutoCenter nur aktivieren, wenn wir "Ab Standort" fahren. 
+            // Bei "Ab Anleger" wollen wir vielleicht eher die Route sehen.
+            if (!startFromBerth) {
+                autoCenter = true;
+                document.getElementById('btn-center').classList.add('active');
+            } else {
+                autoCenter = false;
+                document.getElementById('btn-center').classList.remove('active');
+                // Karte so zoomen, dass Start und Ziel drauf sind
+                const group = new L.featureGroup([L.marker(startPos), L.marker(e.latlng)]);
+                map.fitBounds(group.getBounds(), {padding: [50, 50]});
+            }
+            
+            map.getContainer().style.cursor = '';
             updateNavState();
         }
     }
@@ -11885,6 +11965,57 @@ function buildGraph() {
         document.getElementById('btn-sar-main').innerHTML = `⏳ ${Math.round(elapsedMin)} MIN<br><span style="font-size:0.7em">DRIFT: ${(totalDistMeters/1000).toFixed(2)} KM</span>`;
     }
     function closeModal() { document.getElementById('sar-modal').style.display='none'; }
+
+    function initFleet() {
+        const sel = document.getElementById('opt-boat');
+        sel.innerHTML = "";
+        
+        fleetConfig.forEach((boat, index) => {
+            const opt = document.createElement('option');
+            opt.value = index; // Wir nutzen den Index als Value
+            opt.innerText = boat.name;
+            sel.appendChild(opt);
+        });
+        
+        // Standardwerte setzen (UI)
+        document.getElementById('opt-start').value = "berth";
+        updateFleetSettings();
+    }
+
+    function updateFleetSettings() {
+        // 1. Boot holen
+        const boatIndex = document.getElementById('opt-boat').value;
+        currentBoat = fleetConfig[boatIndex];
+        
+        // 2. Modus holen
+        const mode = document.getElementById('opt-start').value;
+        startFromBerth = (mode === 'berth');
+
+        // 3. Info Text
+        const coords = waypoints[currentBoat.homeWp];
+        const info = startFromBerth 
+            ? `Startet fix von ${currentBoat.name} (WP ${currentBoat.homeWp})` 
+            : `Startet von deiner aktuellen GPS Position.`;
+            
+        document.getElementById('current-boat-info').innerText = info;
+        
+        // Optional: Home-Marker auf Karte zeichnen
+        drawHomeMarker();
+    }
+
+    let homeMarkerLayer = L.layerGroup(); // Muss noch zur map hinzugefügt werden! (siehe unten)
+
+    function drawHomeMarker() {
+        if(!map) return;
+        homeMarkerLayer.clearLayers();
+        if(startFromBerth && waypoints[currentBoat.homeWp]) {
+            const ll = waypoints[currentBoat.homeWp];
+            const marker = L.circleMarker(ll, {
+                color: '#facc15', radius: 6, fillOpacity: 0.2
+            }).bindPopup(`<b>HEIMATHAFEN</b><br>${currentBoat.name}`);
+            homeMarkerLayer.addLayer(marker);
+        }
+    }
 
     </script>
 </body>
