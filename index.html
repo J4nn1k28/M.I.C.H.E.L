@@ -278,7 +278,7 @@
                 <div>
                     <span class="label">ROUTING STARTPUNKT</span>
                     <select id="opt-start" onchange="updateFleetSettings()" style="width:100%; padding:10px; background:#000; color:#fff; border:1px solid var(--border); border-radius:4px;">
-                        <option value="berth">⚓ AB ANLEGER (Heimathafen)</option>
+                        <option value="berth">⚓ AB KLB ANLEGER</option>
                         <option value="gps">📍 AB STANDORT (GPS Gerät)</option>
                     </select>
                 </div>
@@ -10720,7 +10720,7 @@ VB2#DE__508P# #H#Do#31.12.2026#22:16# 6.89 # #365#+ 1:00#  27171#   1#2461406.38
     let globalTides = [];       // Globale Liste der Tiden
 
     const fleetConfig = [
-        { id: "f3917", name: "Kleinboot F3917", homeWp: "w814" },
+        { id: "f3917", name: "F3917 ROTVE-KB", homeWp: "w814" },
         // Hier können später weitere Boote rein:
         // { id: "f_res", name: "Reserveboot", homeWp: "w1" } 
     ];
@@ -12001,7 +12001,7 @@ function buildGraph() {
         // 3. Info Text
         const coords = waypoints[currentBoat.homeWp];
         const info = startFromBerth 
-            ? `Startet fix von ${currentBoat.name} (WP ${currentBoat.homeWp})` 
+            ? `Startet von ${currentBoat.name}` 
             : `Startet von deiner aktuellen GPS Position.`;
             
         document.getElementById('current-boat-info').innerText = info;
@@ -12019,7 +12019,7 @@ function buildGraph() {
             const ll = waypoints[currentBoat.homeWp];
             const marker = L.circleMarker(ll, {
                 color: '#facc15', radius: 6, fillOpacity: 0.2
-            }).bindPopup(`<b>HEIMATHAFEN</b><br>${currentBoat.name}`);
+            }).bindPopup(`<b>ANLEGER</b><br>${currentBoat.name}`);
             homeMarkerLayer.addLayer(marker);
         }
     }
