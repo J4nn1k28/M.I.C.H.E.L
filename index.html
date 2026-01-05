@@ -227,6 +227,7 @@
             <div id="btn-loc" class="btn-fab" onclick="locateUser()">📍</div>
             <div id="btn-center" class="btn-fab active" onclick="toggleAutoCenter()">🎯</div>
             <div id="btn-flow" class="btn-fab active" onclick="toggleFlow()">🌊</div>
+            <div id="btn-ships" class="btn-fab" onclick="toggleShips()">🚢</div>
             <div id="btn-nav" class="btn-fab" onclick="toggleNavMode()">🧭</div>
             <div id="btn-sar-main" class="btn-fab" onclick="handleSarClick()">🚨</div>
             
@@ -10732,6 +10733,13 @@ VB2#DE__508P# #H#Do#31.12.2026#22:16# 6.89 # #365#+ 1:00#  27171#   1#2461406.38
     let lockLayer; 
     let showLocks = false;
 
+    let shipLayer = L.layerGroup(); 
+    let showShips = false;
+    let aisSocket = null;
+    let shipMarkers = {}; // Speichert: { mmsi: markerObjekt }
+
+    const AIS_API_KEY = "06a4a640d80f065248850be9a274da397aab0dc8";
+
     // INIT
     window.onload = function() {
         initMap();
@@ -10762,6 +10770,7 @@ VB2#DE__508P# #H#Do#31.12.2026#22:16# 6.89 # #365#+ 1:00#  27171#   1#2461406.38
         currentLayer = L.layerGroup().addTo(map);
         myPosLayer = L.layerGroup().addTo(map);
         lockLayer = L.layerGroup().addTo(map); // Hier ist es sicher!
+        shipLayer = L.layerGroup();
         homeMarkerLayer.addTo(map); // <--- NEU: Layer für den Heimathafen
 
         map.on('click', onMapClick);
@@ -12022,6 +12031,137 @@ function buildGraph() {
             }).bindPopup(`<b>ANLEGER</b><br>${currentBoat.name}`);
             homeMarkerLayer.addLayer(marker);
         }
+    }
+
+    function toggleShips() {
+        showShips = !showShips;
+        const btn = document.getElementById('btn-ships');
+        
+        if(showShips) {
+            btn.classList.add('active');
+            shipLayer.addTo(map);
+            connectToAisStream();
+            showSysMsg("Verbinde mit Live-AIS...", "TRAFFIC");
+        } else {
+            btn.classList.remove('active');
+            shipLayer.remove();
+            if(aisSocket) {
+                aisSocket.close();
+                aisSocket = null;
+            }
+        }
+    }
+
+    function connectToAisStream() {
+        if(aisSocket) return;
+
+        aisSocket = new WebSocket("wss://stream.aisstream.io/v0/stream");
+
+        aisSocket.onopen = function() {
+            showSysMsg("AIS Verbindung hergestellt.", "TRAFFIC ONLINE");
+            
+            // Wir abonnieren nur den Bereich Hamburg (Bounding Box)
+            const subscription = {
+                Apikey: AIS_API_KEY,
+                BoundingBoxes: [[
+                    [53.40, 9.70], // Süd-West Ecke (ungefähr)
+                    [53.60, 10.30] // Nord-Ost Ecke
+                ]],
+                FilterMessageTypes: ["PositionReport"] // Wir wollen nur Positionen
+            };
+            aisSocket.send(JSON.stringify(subscription));
+        };
+
+        aisSocket.onmessage = function(event) {
+            const msg = JSON.parse(event.data);
+            if (msg.MessageType === "PositionReport") {
+                updateShipMarker(msg);
+            }
+        };
+
+        aisSocket.onerror = function(error) {
+            console.error("AIS Error", error);
+            showSysMsg("AIS Fehler. API Key prüfen?", "FEHLER");
+        };
+        
+        aisSocket.onclose = function() {
+            console.log("AIS Stream geschlossen");
+        };
+    }
+
+    function updateShipMarker(data) {
+        const meta = data.MetaData;
+        const rep = data.Message.PositionReport;
+        const mmsi = meta.MMSI;
+        
+        // Koordinaten
+        const lat = rep.Latitude;
+        const lng = rep.Longitude;
+        
+        // Kurs & Geschwindigkeit
+        const cog = rep.Cog || 0; // Course over Ground
+        const sog = rep.Sog || 0; // Speed over Ground
+        const name = meta.ShipName ? meta.ShipName.trim() : "Unbekannt";
+
+        // Marker Update oder Neu erstellen
+        if (shipMarkers[mmsi]) {
+            // Update
+            const marker = shipMarkers[mmsi];
+            marker.setLatLng([lat, lng]);
+            
+            // Rotation updaten
+            const iconEl = marker.getElement();
+            if(iconEl) {
+                const inner = iconEl.querySelector('div');
+                if(inner) inner.style.transform = `rotate(${cog - 45}deg)`;
+            }
+            
+            // Popup Inhalt aktualisieren
+            if(marker.isPopupOpen()) {
+                marker.setPopupContent(buildShipPopup(name, mmsi, sog, cog));
+            }
+            
+        } else {
+            // Neu erstellen
+            // Farbe je nach Schiffstyp raten (AisStream liefert Typ oft erst in "ShipStaticData", 
+            // hier vereinfachen wir alles als "Blau", außer es ist extrem schnell -> SAR?)
+            let color = "#3b82f6"; 
+            if(sog > 20) color = "#ef4444"; // Schnelles Schiff -> evtl Behörde/SAR
+
+            const iconHtml = `<div style="
+                transform: rotate(${cog - 45}deg); 
+                color: ${color}; 
+                font-size: 20px; 
+                text-shadow: 0 0 5px #000;
+                transition: transform 1s linear;">
+                <i class="fa-solid fa-location-arrow"></i>
+            </div>`;
+            
+            const icon = L.divIcon({
+                className: 'ship-icon-wrap',
+                html: iconHtml,
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
+            });
+
+            const marker = L.marker([lat, lng], {icon: icon})
+                .bindPopup(buildShipPopup(name, mmsi, sog, cog));
+            
+            shipMarkers[mmsi] = marker;
+            shipLayer.addLayer(marker);
+        }
+    }
+
+    function buildShipPopup(name, mmsi, sog, cog) {
+        return `
+            <div style="text-align:center">
+                <b>${name}</b><br>
+                <span style="font-size:0.8em; color:#aaa">MMSI: ${mmsi}</span><br>
+                <div style="margin-top:5px; font-weight:bold;">
+                    ${sog.toFixed(1)} kn &nbsp;|&nbsp; ${Math.round(cog)}°
+                </div>
+            </div>
+        `;
     }
 
     </script>
