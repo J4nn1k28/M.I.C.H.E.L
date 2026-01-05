@@ -11090,6 +11090,7 @@ function buildGraph() {
     
 
     // --- DIJKSTRA ROUTING (Intelligent mit Umleitungswarnung) ---
+    // --- DIJKSTRA ROUTING (KORRIGIERT: Übergibt vollständige Objekte an Status-Check) ---
     function calculateRoute(startLL, endLL) {
         if(Object.keys(graph).length === 0) return { path: [startLL, endLL], names: [] };
         
@@ -11097,7 +11098,7 @@ function buildGraph() {
         const endId = findNearest(endLL);
         if(!startId || !endId || startId === endId) return { path: [startLL, endLL], names: [] };
 
-        // Interne Routing-Logik (wiederverwendbar)
+        // Interne Routing-Logik
         function runDijkstra(ignoreRestrictions) {
             let dists = {}, prev = {}, pq = [{id: startId, d:0}];
             for(let id in graph) dists[id] = Infinity;
@@ -11119,19 +11120,21 @@ function buildGraph() {
                         if ((props.blocked || props.type === 'barrier') && !isEmergency) {
                             isPassable = false;
                         }
+                        
                         // 2. Schleusen prüfen
                         if (props.type === 'lock') {
-                            const isOpen = checkLockStatus(props.open);
+                            // WICHTIG: Hier übergeben wir jetzt das GANZE Objekt 'props'
+                            // Vorher stand hier fälschlicherweise 'props.open'
+                            const isOpen = checkLockStatus(props); 
+                            
                             if (!isOpen) {
                                 isPassable = false; // Zu ist zu.
                             } else {
-                                penalty = 600; // Zeitstrafe für Schleusung (ca. 5-10 min Umweg wert)
+                                penalty = 600; // Zeitstrafe für Schleusung
                             }
                         }
                     } else {
-                        // Optimistischer Modus (Simuliert "Alles ist offen") für den Vergleich
-                        // Wir geben der Schleuse trotzdem die Penalty, damit wir sehen, 
-                        // ob der Algorithmus sie *trotz* Wartezeit wählen würde.
+                        // Optimistischer Modus (für Vergleich)
                         if (props.type === 'lock') penalty = 600;
                     }
 
@@ -11148,29 +11151,27 @@ function buildGraph() {
             return { dists, prev };
         }
 
-        // SCHRITT 1: Analyse - Würden wir durch eine geschlossene Schleuse wollen?
+        // SCHRITT 1: Analyse - Detour Check
         let detourReason = null;
-        
-        // Nur prüfen, wenn wir nicht im Einsatz sind (im Einsatz fahren wir eh durch)
         if (!isEmergency) {
-            // Berechne "Wunsch-Route" (ignoriere Öffnungszeiten)
-            const sim = runDijkstra(true); 
+            const sim = runDijkstra(true); // "Alles offen"-Simulation
             
-            // Wir laufen die Wunsch-Route ab und schauen, ob da was zu ist
             let u = endId;
             while(u && u !== startId) {
                 const p = sim.prev[u];
                 if(p) {
                     const edge = graph[p].edges.find(e => e.target === u);
-                    // Check: Ist das eine Schleuse UND ist sie eigentlich zu?
+                    
+                    // Check: Würden wir idealerweise durch eine geschlossene Schleuse fahren?
                     if(edge && edge.props && edge.props.type === 'lock') {
-                        const isOpen = checkLockStatus(edge.props.open);
+                        // Auch hier: Das ganze Objekt übergeben!
+                        const isOpen = checkLockStatus(edge.props);
                         if(!isOpen) {
                             detourReason = edge.props.name || "Schleuse";
-                            break; // Grund gefunden, Suche beenden
+                            break; 
                         }
                     }
-                    // Check: Ist es eine Barriere (z.B. Moorkanal)?
+                    // Check: Barriere
                     if(edge && edge.props && (edge.props.blocked || edge.props.type === 'barrier')) {
                          detourReason = edge.props.name || "Sperrung";
                          break;
@@ -11180,16 +11181,14 @@ function buildGraph() {
             }
         }
 
-        // SCHRITT 2: Die TATSÄCHLICHE Route berechnen (mit Regeln)
+        // SCHRITT 2: Echte Route berechnen
         const realCalc = runDijkstra(false); 
         
-        // Wenn gar kein Weg gefunden wurde:
         if(realCalc.dists[endId] === Infinity) {
             showSysMsg("Zielgebiet ist derzeit nicht erreichbar (Sperrung oder geschlossene Schleuse).", "ROUTING FEHLER");
             return { path: [startLL, endLL], names: [] };
         }
 
-        // Pfad rekonstruieren
         let path = [], names = [], u = endId;
         if(realCalc.prev[u] || u === startId) {
             while(u) { 
@@ -11209,11 +11208,9 @@ function buildGraph() {
             path.unshift(startLL); names.unshift("ZUM START");
             path.push(endLL); names.push("ZIELGEBIET");
             
-            // --- HIER DIE MELDUNG AN DEN USER ---
             if (detourReason) {
                 showSysMsg(`Die Route wurde angepasst, da "${detourReason}" aktuell geschlossen ist.`, "UMLEITUNG AKTIV");
             }
-            // ------------------------------------
             
             return { path: path, names: names };
         } else {
@@ -11566,10 +11563,45 @@ function buildGraph() {
     }
 
     function updateTiefstack() {
-        const h = new Date().getHours();
-        const el = document.getElementById('ts-status');
-        if(h > 6 && h < 22) { el.innerText="OFFEN"; el.style.color="var(--good)"; }
-        else { el.innerText="GESCHLOSSEN"; el.style.color="var(--alert)"; }
+        // 1. Wir suchen die Tiefstackschleuse in den Connections
+        let lockProps = null;
+        for (let conn of connections) {
+            if (conn[2] && conn[2].name === "Tiefstackschleuse") {
+                lockProps = conn[2];
+                break;
+            }
+        }
+
+        if (!lockProps) return; // Sollte nicht passieren
+
+        // 2. Status prüfen (mit unserer neuen Smart-Logik)
+        const isOpen = checkLockStatus(lockProps);
+        const physReason = getPhysicalBlockReason(lockProps);
+        
+        // 3. UI Elemente holen
+        const elStatus = document.getElementById('ts-status');
+        const elReason = document.getElementById('ts-reason');
+
+        // 4. Anzeigen
+        if (isOpen) {
+            elStatus.innerText = "OFFEN";
+            elStatus.style.color = "var(--good)";
+            elReason.innerText = "Normalbetrieb";
+            elReason.style.color = "var(--dim)";
+        } else {
+            elStatus.innerText = "GESCHLOSSEN";
+            elStatus.style.color = "var(--alert)";
+            
+            // Grund ermitteln
+            if (physReason) {
+                elReason.innerText = physReason; // z.B. "PEGEL ZU HOCH..."
+                elReason.style.color = "var(--alert)";
+            } else {
+                // Wenn nicht physikalisch, dann liegt es an der Öffnungszeit
+                elReason.innerText = "Außerhalb der Betriebszeiten"; 
+                elReason.style.color = "var(--dim)";
+            }
+        }
     }
 
     function parseBSH() {
@@ -11598,8 +11630,12 @@ function buildGraph() {
              if(hw) document.getElementById('next-hw').innerText = hw.time.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
              if(nw) document.getElementById('next-nw').innerText = nw.time.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
              const diff = Math.round((next.time - now)/60000);
-             if (diff > 0) document.getElementById('tide-count').innerText = `Noch ${Math.floor(diff/60)}h ${diff%60}m bis ${next.type==='H'?'HW':'NW'}`;
-        }
+             const diffText = `Noch ${Math.floor(diff/60)}h ${diff%60}m bis ${next.type==='H'?'HW':'NW'}`;
+             if (diff > 0) {
+                 document.getElementById('tide-count').innerText = diffText; // Das ist die kleine Karte rechts
+                 document.getElementById('val-tide-sub').innerText = diffText; // Das ist der Text unter "Aktuelle Tide"
+             }
+            }
     }
 
     // Ersetzt den nativen alert()
