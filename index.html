@@ -227,7 +227,6 @@
             <div id="btn-loc" class="btn-fab" onclick="locateUser()">📍</div>
             <div id="btn-center" class="btn-fab active" onclick="toggleAutoCenter()">🎯</div>
             <div id="btn-flow" class="btn-fab active" onclick="toggleFlow()">🌊</div>
-            <div id="btn-ships" class="btn-fab" onclick="toggleShips()">🚢</div>
             <div id="btn-nav" class="btn-fab" onclick="toggleNavMode()">🧭</div>
             <div id="btn-sar-main" class="btn-fab" onclick="handleSarClick()">🚨</div>
             
@@ -10733,13 +10732,6 @@ VB2#DE__508P# #H#Do#31.12.2026#22:16# 6.89 # #365#+ 1:00#  27171#   1#2461406.38
     let lockLayer; 
     let showLocks = false;
 
-    let shipLayer = L.layerGroup(); 
-    let showShips = false;
-    let aisSocket = null;
-    let shipMarkers = {}; // Speichert: { mmsi: markerObjekt }
-
-    const AIS_API_KEY = "06a4a640d80f065248850be9a274da397aab0dc8";
-
     // INIT
     window.onload = function() {
         initMap();
@@ -10770,7 +10762,6 @@ VB2#DE__508P# #H#Do#31.12.2026#22:16# 6.89 # #365#+ 1:00#  27171#   1#2461406.38
         currentLayer = L.layerGroup().addTo(map);
         myPosLayer = L.layerGroup().addTo(map);
         lockLayer = L.layerGroup().addTo(map); // Hier ist es sicher!
-        shipLayer = L.layerGroup();
         homeMarkerLayer.addTo(map); // <--- NEU: Layer für den Heimathafen
 
         map.on('click', onMapClick);
@@ -12031,160 +12022,6 @@ function buildGraph() {
             }).bindPopup(`<b>ANLEGER</b><br>${currentBoat.name}`);
             homeMarkerLayer.addLayer(marker);
         }
-    }
-
-    function toggleShips() {
-        showShips = !showShips;
-        const btn = document.getElementById('btn-ships');
-        
-        if(showShips) {
-            btn.classList.add('active');
-            shipLayer.addTo(map);
-            connectToAisStream();
-            showSysMsg("Verbinde mit Live-AIS...", "TRAFFIC");
-        } else {
-            btn.classList.remove('active');
-            shipLayer.remove();
-            if(aisSocket) {
-                aisSocket.close();
-                aisSocket = null;
-            }
-        }
-    }
-
-    function connectToAisStream() {
-        if(aisSocket) return;
-
-        console.log("Starte Verbindung...");
-        showSysMsg("Verbinde mit Satellit...", "TRAFFIC INIT");
-        
-        // Verbindung aufbauen
-        aisSocket = new WebSocket("wss://stream.aisstream.io/v0/stream");
-
-        // 1. WENN DIE TÜR AUFGEHT (onopen) -> NACHRICHT SENDEN
-        aisSocket.onopen = function() {
-            console.log("WebSocket offen! Sende Subscription Nachricht...");
-            showSysMsg("Authentifizierung...", "TRAFFIC");
-            
-            const subscription = {
-                APIKey: AIS_API_KEY, // <--- WICHTIG: Groß/Kleinschreibung beachten!
-                BoundingBoxes: [[
-                    [53.40, 9.70], 
-                    [53.65, 10.35]
-                ]],
-                FilterMessageTypes: ["PositionReport", "ShipStaticData"] 
-            };
-            
-            // Nachricht in Text umwandeln und senden
-            const msgString = JSON.stringify(subscription);
-            console.log("Sende:", msgString); // <--- Prüfe das in der Konsole!
-            aisSocket.send(msgString);
-        };
-
-        // 2. WENN DATEN KOMMEN
-        aisSocket.onmessage = function(event) {
-            const response = JSON.parse(event.data);
-            // Wenn wir Daten kriegen, hat es geklappt!
-            if (response.MessageType === "PositionReport") {
-                updateShipPosition(response);
-            } else if (response.MessageType === "ShipStaticData") {
-                updateShipDetails(response);
-            }
-        };
-
-        // 3. FEHLER
-        aisSocket.onerror = function(error) {
-            console.error("AIS Netzwerk-Fehler:", error);
-        };
-        
-        // 4. VERBINDUNG ABGEBROCHEN
-        aisSocket.onclose = function(event) {
-            console.log("AIS Verbindung geschlossen. Code:", event.code);
-            if(showShips) {
-                if(event.code === 1006) {
-                    showSysMsg("Verbindung abgelehnt! API Key prüfen.", "FEHLER 1006");
-                    console.error("Fehler 1006: Der Server hat die Verbindung sofort beendet. Meistens ist der API Key falsch oder die Subscription Message fehlerhaft.");
-                } else {
-                    showSysMsg("Verbindung verloren. Reconnect...", "AIS NETZWERK");
-                    setTimeout(connectToAisStream, 5000);
-                }
-            }
-        };
-    }
-
-    function updateShipMarker(data) {
-        const meta = data.MetaData;
-        const rep = data.Message.PositionReport;
-        const mmsi = meta.MMSI;
-        
-        // Koordinaten
-        const lat = rep.Latitude;
-        const lng = rep.Longitude;
-        
-        // Kurs & Geschwindigkeit
-        const cog = rep.Cog || 0; // Course over Ground
-        const sog = rep.Sog || 0; // Speed over Ground
-        const name = meta.ShipName ? meta.ShipName.trim() : "Unbekannt";
-
-        // Marker Update oder Neu erstellen
-        if (shipMarkers[mmsi]) {
-            // Update
-            const marker = shipMarkers[mmsi];
-            marker.setLatLng([lat, lng]);
-            
-            // Rotation updaten
-            const iconEl = marker.getElement();
-            if(iconEl) {
-                const inner = iconEl.querySelector('div');
-                if(inner) inner.style.transform = `rotate(${cog - 45}deg)`;
-            }
-            
-            // Popup Inhalt aktualisieren
-            if(marker.isPopupOpen()) {
-                marker.setPopupContent(buildShipPopup(name, mmsi, sog, cog));
-            }
-            
-        } else {
-            // Neu erstellen
-            // Farbe je nach Schiffstyp raten (AisStream liefert Typ oft erst in "ShipStaticData", 
-            // hier vereinfachen wir alles als "Blau", außer es ist extrem schnell -> SAR?)
-            let color = "#3b82f6"; 
-            if(sog > 20) color = "#ef4444"; // Schnelles Schiff -> evtl Behörde/SAR
-
-            const iconHtml = `<div style="
-                transform: rotate(${cog - 45}deg); 
-                color: ${color}; 
-                font-size: 20px; 
-                text-shadow: 0 0 5px #000;
-                transition: transform 1s linear;">
-                <i class="fa-solid fa-location-arrow"></i>
-            </div>`;
-            
-            const icon = L.divIcon({
-                className: 'ship-icon-wrap',
-                html: iconHtml,
-                iconSize: [24, 24],
-                iconAnchor: [12, 12]
-            });
-
-            const marker = L.marker([lat, lng], {icon: icon})
-                .bindPopup(buildShipPopup(name, mmsi, sog, cog));
-            
-            shipMarkers[mmsi] = marker;
-            shipLayer.addLayer(marker);
-        }
-    }
-
-    function buildShipPopup(name, mmsi, sog, cog) {
-        return `
-            <div style="text-align:center">
-                <b>${name}</b><br>
-                <span style="font-size:0.8em; color:#aaa">MMSI: ${mmsi}</span><br>
-                <div style="margin-top:5px; font-weight:bold;">
-                    ${sog.toFixed(1)} kn &nbsp;|&nbsp; ${Math.round(cog)}°
-                </div>
-            </div>
-        `;
     }
 
     </script>
