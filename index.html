@@ -127,9 +127,11 @@
             background: #0f172a; border-top: 1px solid var(--border); z-index: 6000;
             display: flex; justify-content: space-around; align-items: center; padding-bottom: env(safe-area-inset-bottom);
         }
-        .nav-item { color: var(--dim); text-align: center; font-size: 0.7em; font-weight: bold; width: 33%; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        .nav-item { color: var(--dim); text-align: center; font-size: 0.7em; font-weight: bold; width: 25%; padding: 10px; display: flex; flex-direction: column; align-items: center; }
         .nav-item.active { color: var(--accent); }
         .nav-icon { font-size: 1.8em; margin-bottom: 4px; display: block; }
+
+
 
         /* SAR MODAL */
         #sar-modal { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--panel); border: 2px solid var(--alert); padding: 20px; z-index: 7000; border-radius: 8px; text-align: center; width: 80%; max-width: 300px; }
@@ -159,6 +161,37 @@
             padding: 12px 25px; border-radius: 6px; font-weight: bold;
             font-size: 1em; margin-top: 20px; width: 100%;
         }
+
+        /* LOCK LIST STYLES */
+        .lock-card { 
+            background: var(--panel); border: 1px solid var(--border); 
+            border-radius: 8px; margin-bottom: 15px; padding: 15px; 
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .lock-header {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;
+        }
+        .lock-name { font-weight: bold; font-family: 'JetBrains Mono'; color: #fff; }
+        .lock-status { font-size: 0.8em; font-weight: bold; padding: 2px 6px; border-radius: 4px; }
+        .status-open { color: var(--good); border: 1px solid var(--good); }
+        .status-closed { color: var(--alert); border: 1px solid var(--alert); }
+        
+        .lock-details { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9em; color: var(--dim); }
+        .lock-phone { color: var(--accent); text-decoration: none; font-weight: bold; }
+        
+        /* Der Notfall-Schalter */
+        .override-btn {
+            background: #1e293b; color: var(--dim); border: 1px solid var(--border);
+            padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer;
+            text-align: center; transition: all 0.2s; text-transform: uppercase; font-size: 0.8em;
+        }
+        .override-btn.active {
+            background: var(--alert); color: white; border-color: var(--alert);
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0% {opacity: 1;} 50% {opacity: 0.8;} 100% {opacity: 1;} }
 
     </style>
 </head>
@@ -211,6 +244,7 @@
                 </div>
                 <div class="grid-2">
                     <div><span class="label">WASSERSTAND</span><span id="val-pegel" class="val-big">--</span></div>
+                    <div id="val-nhn" style="font-family:'JetBrains Mono'; font-size:0.9em; color:var(--accent); font-weight:bold; margin-top:-5px;">-- mNHN</div>
                     <div><span class="label">TENDENZ</span><span id="val-trend" class="val-big">--</span></div>
                 </div>
                 <div style="margin-top:15px; padding-top:10px; border-top:1px solid var(--border); text-align:center;">
@@ -259,10 +293,19 @@
         </div>
     </div>
 
+    <div id="view-locks" class="view-section">
+        <div class="info-container">
+            <h3 style="border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 20px;">SCHLEUSEN STEUERUNG</h3>
+            <div id="lock-list">
+                </div>
+        </div>
+    </div>
+
     <div id="bottom-nav">
         <div class="nav-item active" onclick="switchView('map', this)"><span class="nav-icon">🗺️</span>KARTE</div>
         <div class="nav-item" onclick="switchView('hydro', this)"><span class="nav-icon">🌊</span>HYDRO</div>
         <div class="nav-item" onclick="switchView('status', this)"><span class="nav-icon">⚙️</span>STATUS</div>
+        <div class="nav-item" onclick="switchView('locks', this)"><span class="nav-icon">🔐</span>SCHLEUSEN</div>
     </div>
 
     <div id="sar-modal">
@@ -3574,7 +3617,10 @@ const connections = [
   {
    "name": "Tiefstackschleuse",
    "type": "lock",
-    open: "Täglich 08:00-20:00"
+    open: "08:00-20:00",
+    phone: "040 42847-0", // <-- NEU
+    "maxLevel": 2.30, // Sperrung über 2.30m NHN
+    "tideRule": { ref: 'N', start: -120, end: 60 } // 120 min vor NW bis 60 min nach NW gesperrt
   }
  ],
  [
@@ -3849,7 +3895,7 @@ const connections = [
   {
    "name": "Hammerbrookschleuse",
    "type": "lock",
-   "open": "[keine]"
+   "open": "GESPERRT"
   }
  ],
  [
@@ -4397,7 +4443,8 @@ const connections = [
   {
    "name": "Brandshofer Schleuse",
    "type": "lock",
-   "open": "Mo-Di 06-18, Do-Fr 06-18"
+   "open": "Mo-Di 06-18, Do-Fr 06-18",
+   "phone": " 040/428 40 3022"
   }
  ],
  [
@@ -5078,7 +5125,10 @@ const connections = [
   "w204",
   "w205",
   {
-   "name": "Alsterfleet"
+   "name": "Rathausschleuse",
+   "type": "lock",
+    open: "06:00-18:00",
+    phone: " 040-428 40 32 11"
   }
  ],
  [
@@ -5269,7 +5319,8 @@ const connections = [
   {
    "name": "Schaartorschleuse",
    "type": "lock",
-   "open": "06:00-22:00"
+   "open": "06:00-18:00",
+   "phone": " 040 428 40 3204"
   }
  ],
  [
@@ -5615,8 +5666,15 @@ const connections = [
   "w299",
   "w298",
   {
-   "name": "Ernst-August-Kanal"
+   "name": "Ernst-August-Schleuse",
+    "type": "lock",
+    open: "24h",
+    phone: "+49 40 / 42847 4870" ,
+    "maxLevel": 3.50, // Sperrung über 3.50m NHN
+    "minLevel": -2.00, // Sperrung unter -2.00m NHN
+    "tideRule": { ref: 'N', start: -120, end: 60 } // 120 min vor NW bis 60 min nach NW gesperrt
   }
+  
  ],
  [
   "w298",
@@ -6037,7 +6095,10 @@ const connections = [
   {
    "name": "Ellerholzschleuse",
    "type": "lock",
-   "open": "24h"
+   "open": "24h",
+   "phone": "+49 40 42847 4850",
+   "minLevel": -2.40, // Sperrung unter -2.40m NHN
+   "maxLevel": 3.50   // Sperrung über +3.50m NHN
   }
  ],
  [
@@ -6088,7 +6149,10 @@ const connections = [
   {
     name: "Reiherstiegschleuse", 
    type: "lock", 
-   open: "GESPERRT"
+   open: "GESPERRT",
+   "phone": "+49 40 42847 4850",
+   "minLevel": -2.40, // Sperrung unter -2.40m NHN
+   "maxLevel": 3.50   // Sperrung über +3.50m NHN
   }
  ],
  [
@@ -6721,7 +6785,14 @@ const connections = [
  ],
  [
   "w440",
-  "w439"
+  "w439",
+  {
+   "name": "Tatenberger Schleuse",
+    "type": "lock",
+    open: "24h",
+    phone: " +49 40 42847 7030" 
+  }
+  
  ],
  [
   "w439",
@@ -7344,7 +7415,10 @@ const connections = [
   {
    "name": "Harburger Hafenschleuse",
    "type": "lock",
-   "open": "05:30, 12:30, 17:00, 00:00"
+   "open": "24h",
+   "phone": "+49 40 42847 4851",
+   "minLevel": -2.00, // Sperrung unter -2.00m NHN
+   "maxLevel": 3.50   // Sperrung über +3.50m NHN
   }
  ],
  [
@@ -7367,7 +7441,10 @@ const connections = [
   {
    "name": "Rugenberger Schleuse",
    type: "lock", 
-   open: "24h"
+   open: "24h",
+   "phone": "+49 40 42847 4850",
+   "minLevel": -2.40, // Sperrung unter -2.40m NHN
+   "maxLevel": 3.50   // Sperrung über +3.50m NHN
   }
  ],
  [
@@ -10605,6 +10682,8 @@ VB2#DE__508P# #H#Do#31.12.2026#22:16# 6.89 # #365#+ 1:00#  27171#   1#2461406.38
     let nextWpIndex = 0;
     let navRouteNames = []; 
     let isEmergency = false; 
+    let currentLevelNHN = -5.0; // Startwert (wird berechnet)
+    let globalTides = [];       // Globale Liste der Tiden
     
     // WICHTIG: Hier nur deklarieren, NICHT initialisieren!
     let lockLayer; 
@@ -10667,38 +10746,189 @@ VB2#DE__508P# #H#Do#31.12.2026#22:16# 6.89 # #365#+ 1:00#  27171#   1#2461406.38
         }
     }
     
-
+let lockOverrides = {};
     // --- HELPER: IST DIE SCHLEUSE OFFEN? ---
-function checkLockStatus(openRule) {
-    if (!openRule) return true; 
-    if (openRule === "24h") return true;
-    if (openRule === "GESPERRT" || openRule === "[keine]") return false;
+// Hilfsfunktion: Gibt den Grund zurück, warum physikalisch gesperrt ist (oder null)
+    function getPhysicalBlockReason(props) {
+        // 1. Pegelstand (NHN)
+        if (props.maxLevel !== undefined && currentLevelNHN > props.maxLevel) {
+            return `PEGEL ZU HOCH (${currentLevelNHN.toFixed(2)}m > ${props.maxLevel}m)`;
+        }
+        if (props.minLevel !== undefined && currentLevelNHN < props.minLevel) {
+            return `PEGEL ZU NIEDRIG (${currentLevelNHN.toFixed(2)}m < ${props.minLevel}m)`;
+        }
 
-    const now = new Date();
-    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+        // 2. Tide-Fenster (z.B. Tiefstack)
+        if (props.tideRule && globalTides.length > 0) {
+            const now = new Date();
+            // Finde das nächste oder letzte relevante Ereignis (z.B. Niedrigwasser 'N')
+            // Wir suchen alle NWs des Tages und prüfen, ob wir im Fenster liegen
+            const relevantTides = globalTides.filter(t => t.type === props.tideRule.ref);
+            
+            for (let tide of relevantTides) {
+                const diffMin = (now - tide.time) / 60000; // Differenz in Minuten
+                // start ist z.B. -120 (2h vorher), end ist 60 (1h danach)
+                // Wenn diffMin zwischen start und end liegt -> Treffer
+                if (diffMin >= props.tideRule.start && diffMin <= props.tideRule.end) {
+                    return "TIDENSPERRUNG (NW +/-)";
+                }
+            }
+        }
+        return null; // Keine physikalische Sperre
+    }
 
-    // Erkennt Formate wie "08:00-20:00"
-    const times = openRule.match(/(\d{1,2}):(\d{2})/g);
-    
-    if (times && times.length >= 2) {
-        const [h1, m1] = times[0].split(':').map(Number);
-        const startMinutes = h1 * 60 + m1;
+    function checkLockStatus(props) {
+        if (!props) return true;
         
-        const [h2, m2] = times[1].split(':').map(Number);
-        const endMinutes = h2 * 60 + m2;
+        // A) HARD BLOCK CHECK (Naturgesetze & Technische Sperrung)
+        // Hier greift keine manuelle Öffnung!
+        
+        // 1. Explizit dauerhaft gesperrt?
+        if (props.open === "GESPERRT" || props.open === "[keine]") {
+            return false;
+        }
 
-        return currentMinutes >= startMinutes && currentMinutes <= endMinutes;
+        // 2. Physikalische Gründe (Pegel/Tide)
+        if (getPhysicalBlockReason(props) !== null) {
+            return false; 
+        }
+
+        // B) NOTFALL-OVERRIDE PRÜFEN (Manuelle Steuerung)
+        // Nur möglich, wenn A) nicht zutrifft
+        if (props.name && lockOverrides[props.name] === true) {
+            return true; 
+        }
+
+        // C) NORMALE ZEITPLANUNG (Regelbetrieb)
+        const openRule = props.open;
+        if (!openRule) return true; 
+        if (openRule === "24h") return true;
+
+        const now = new Date();
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+        const times = openRule.match(/(\d{1,2}):(\d{2})/g);
+        if (times && times.length >= 2) {
+            const [h1, m1] = times[0].split(':').map(Number);
+            const startMinutes = h1 * 60 + m1;
+            const [h2, m2] = times[1].split(':').map(Number);
+            const endMinutes = h2 * 60 + m2;
+            return currentMinutes >= startMinutes && currentMinutes <= endMinutes;
+        }
+        
+        if (openRule.includes("Mo") || openRule.includes("Täglich")) {
+            return currentMinutes >= 360 && currentMinutes <= 1200; 
+        }
+
+        return true; 
     }
-    
-    // Fallback: Wenn wir es nicht parsen können, aber "Mo-Di" etc. steht -> 
-    // Für diesen Prototyp nehmen wir an: Tagsüber offen.
-    if (openRule.includes("Mo") || openRule.includes("Täglich")) {
-        return currentMinutes >= 360 && currentMinutes <= 1200; // 06:00 bis 20:00 grob
+// 2. FUNKTION: Liste rendern (wird beim Tab-Wechsel aufgerufen)
+    // 2. FUNKTION: Liste rendern (Erweitert um Grenzwerte)
+    function renderLockList() {
+        const container = document.getElementById('lock-list');
+        container.innerHTML = "";
+        
+        const seenLocks = new Set();
+        
+        connections.forEach(conn => {
+            const props = conn[2];
+            if(props && props.type === 'lock' && props.name) {
+                if(seenLocks.has(props.name)) return;
+                seenLocks.add(props.name);
+                
+                const physBlockReason = getPhysicalBlockReason(props);
+                const isOpenReal = checkLockStatus(props); 
+                const isOverridden = lockOverrides[props.name] === true;
+                
+                // Zusatz-Infos generieren
+                let infoParts = [];
+                if (props.minLevel !== undefined || props.maxLevel !== undefined) {
+                    let text = "Pegel: ";
+                    if (props.minLevel !== undefined) text += `>${props.minLevel.toFixed(2)}m `;
+                    if (props.maxLevel !== undefined) text += `<${props.maxLevel.toFixed(2)}m `;
+                    infoParts.push(text + "NHN");
+                }
+                if (props.tideRule) {
+                    const startH = props.tideRule.start / 60;
+                    const endH = props.tideRule.end / 60;
+                    const sStr = startH > 0 ? `+${startH}` : startH;
+                    const eStr = endH > 0 ? `+${endH}` : endH;
+                    infoParts.push(`Sperrung: ${props.tideRule.ref} ${sStr}h bis ${eStr}h`);
+                }
+                
+                const extraInfoHtml = infoParts.length > 0 
+                    ? `<div style="grid-column: span 2; font-size: 0.8em; color: #94a3b8; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 5px; margin-top: 5px;">
+                         ℹ️ ${infoParts.join(' • ')}
+                       </div>` 
+                    : '';
+
+                // --- BUTTON LOGIK ---
+                let btnClass = "override-btn";
+                let btnText = "📢 ALARMIEREN / BESETZEN";
+                let btnAction = `toggleLockOverride('${props.name}')`;
+                let btnStyle = "";
+
+                // Priorität 1: Technische Dauersperrung
+                if (props.open === "GESPERRT") {
+                    btnClass += " disabled";
+                    btnText = "⛔ TECHNISCH AUßER DIENST";
+                    btnAction = ""; // Klick deaktivieren
+                    btnStyle = "background: #331111; color: #ef4444; border-color: #552222; cursor: not-allowed; animation: none;";
+                }
+                // Priorität 2: Physikalische Sperrung (Pegel/Tide)
+                else if (physBlockReason) {
+                    btnClass += " disabled"; 
+                    btnText = `⛔ SPERRUNG AKTIV: ${physBlockReason}`;
+                    btnAction = ""; 
+                    btnStyle = "background: #331111; color: #ef4444; border-color: #552222; cursor: not-allowed; animation: none;";
+                } 
+                // Priorität 3: Override aktiv
+                else if (isOverridden) {
+                    btnClass += " active";
+                    btnText = "🚨 ALARMIERT & BESETZT (MANUELL OFFEN)";
+                }
+
+                const div = document.createElement('div');
+                div.className = 'lock-card';
+                div.innerHTML = `
+                    <div class="lock-header">
+                        <span class="lock-name">${props.name}</span>
+                        <span class="lock-status ${isOpenReal ? 'status-open' : 'status-closed'}">
+                            ${isOpenReal ? 'OFFEN' : 'GESCHLOSSEN'}
+                        </span>
+                    </div>
+                    <div class="lock-details">
+                        <div>🕒 ${props.open || '24h'}</div>
+                        <div>📞 <a href="tel:${props.phone || ''}" class="lock-phone">${props.phone || 'N/A'}</a></div>
+                        ${extraInfoHtml}
+                    </div>
+                    <div class="${btnClass}" style="${btnStyle}" onclick="${btnAction}">
+                        ${btnText}
+                    </div>
+                `;
+                container.appendChild(div);
+            }
+        });
+        
+        if(seenLocks.size === 0) container.innerHTML = "<p style='color:#666; text-align:center;'>Keine Schleusen definiert.</p>";
     }
-
-    return true; 
-}
-
+// 3. FUNKTION: Toggle Button Logik
+function toggleLockOverride(lockName) {
+        if (lockOverrides[lockName]) {
+            delete lockOverrides[lockName]; // Zurücksetzen auf Automatik
+        } else {
+            lockOverrides[lockName] = true; // Erzwinge OFFEN
+        }
+        
+        // UI Updates
+        renderLockList(); // Liste neu zeichnen
+        if(showLocks) toggleLocks(); toggleLocks(); // Hack: Karte neu zeichnen
+        
+        // Optional: Feedback Message
+        if(lockOverrides[lockName]) {
+            showSysMsg(`${lockName} wurde manuell auf OFFEN gesetzt. Routing führt nun hier durch.`, "SCHLEUSE BESETZT");
+        }
+    }
 // --- VISUALISIERUNG: KNOPF DRÜCKEN ---
 function toggleLocks() {
     showLocks = !showLocks;
@@ -10725,7 +10955,7 @@ function toggleLocks() {
                 const midLat = (nodeA.lat + nodeB.lat) / 2;
                 const midLng = (nodeA.lng + nodeB.lng) / 2;
                 
-                const isOpen = checkLockStatus(props.open);
+                const isOpen = checkLockStatus(props);
                 const color = isOpen ? '#22c55e' : '#ef4444'; // Grün oder Rot
                 const statusText = isOpen ? "GEOFFNET" : "GESCHLOSSEN";
 
@@ -11029,7 +11259,7 @@ function buildGraph() {
                     const midLat = (nodeA.lat + nodeB.lat) / 2;
                     const midLng = (nodeA.lng + nodeB.lng) / 2;
                     
-                    const isOpen = checkLockStatus(props.open);
+                    const isOpen = checkLockStatus(props);
                     const color = isOpen ? '#22c55e' : '#ef4444'; // Grün oder Rot
                     const statusText = isOpen ? "GEOFFNET" : "GESCHLOSSEN";
 
@@ -11251,9 +11481,20 @@ function buildGraph() {
         try {
             const res = await fetch("https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/d488c5cc-4de9-4631-8ce1-0db0e700b546/W/measurements.json?start=P0DT0H20M");
             const data = await res.json();
-            const val = data[data.length-1].value;
+            const val = data[data.length-1].value; 
+            
             document.getElementById('val-pegel').innerText = val;
+            
+            // --- BERECHNUNG & ANZEIGE ---
+            currentLevelNHN = (val - 500) / 100; 
+            
+            // NEU: Wert ins HTML schreiben (mit Vorzeichen)
+            const sign = currentLevelNHN >= 0 ? "+" : "";
+            document.getElementById('val-nhn').innerText = `${sign}${currentLevelNHN.toFixed(2)} mNHN`;
+            // ----------------------------
+
             const diff = val - data[0].value;
+            // ... (Rest der Funktion bleibt gleich)
             trendDiff = diff; 
             document.getElementById('val-trend').innerText = (diff>0?"+":"")+diff;
             
@@ -11270,9 +11511,13 @@ function buildGraph() {
             drawCurrents();
         } catch(e) {
             console.log("Offline");
-            document.getElementById('status-dot').style.color="orange";
-            document.getElementById('val-tide-status').innerText = "OFFLINE";
-            document.getElementById('val-pegel').innerText = "520 (Sim)";
+            // Fallback Werte für Simulation
+            currentLevelNHN = 0.5; // Angenommenes Mittelwasser
+        }
+        
+        // WICHTIG: Liste neu zeichnen, da sich Status geändert haben könnte
+        if(document.getElementById('view-locks').classList.contains('active')) {
+            renderLockList();
         }
         updateTiefstack();
     }
@@ -11330,7 +11575,8 @@ function buildGraph() {
     function parseBSH() {
         if(!bshData) return;
         const lines = bshData.split('\n');
-        let parsedTides = [];
+        let parsedTides = []; // Lokale temp Variable
+        
         lines.forEach(l => {
             if(!l.includes("VB2")) return;
             const p = l.split('#');
@@ -11339,16 +11585,20 @@ function buildGraph() {
             parsedTides.push({ time: new Date(parseInt(d[2]), parseInt(d[1])-1, parseInt(d[0]), parseInt(t[0]), parseInt(t[1])), type: p[3].trim() });
         });
         parsedTides.sort((a,b)=>a.time-b.time);
+        
+        globalTides = parsedTides; // <--- HIER: GLOBAL SPEICHERN!
+
+        // ... (Rest der Funktion mit next-hw Anzeige bleibt gleich)
         const now = new Date(); 
         let next = parsedTides.find(e => e.time > now);
         if(!next && parsedTides.length>0) next = parsedTides[0]; 
         if(next) {
-            const hw = parsedTides.find(e => e.time >= next.time && e.type === 'H');
-            const nw = parsedTides.find(e => e.time >= next.time && e.type === 'N');
-            if(hw) document.getElementById('next-hw').innerText = hw.time.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-            if(nw) document.getElementById('next-nw').innerText = nw.time.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-            const diff = Math.round((next.time - now)/60000);
-            if (diff > 0) document.getElementById('tide-count').innerText = `Noch ${Math.floor(diff/60)}h ${diff%60}m bis ${next.type==='H'?'HW':'NW'}`;
+             const hw = parsedTides.find(e => e.time >= next.time && e.type === 'H');
+             const nw = parsedTides.find(e => e.time >= next.time && e.type === 'N');
+             if(hw) document.getElementById('next-hw').innerText = hw.time.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+             if(nw) document.getElementById('next-nw').innerText = nw.time.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+             const diff = Math.round((next.time - now)/60000);
+             if (diff > 0) document.getElementById('tide-count').innerText = `Noch ${Math.floor(diff/60)}h ${diff%60}m bis ${next.type==='H'?'HW':'NW'}`;
         }
     }
 
@@ -11436,11 +11686,22 @@ function buildGraph() {
     function locateUser() { map.locate({setView: true, maxZoom: 15}); }
     
     function switchView(v, btn) {
+        // Alle Views ausblenden
         document.querySelectorAll('.view-section').forEach(e => e.classList.remove('active'));
-        document.getElementById('view-'+v).classList.add('active');
+        
+        // Gewählten View einblenden
+        const viewEl = document.getElementById('view-'+v);
+        if(viewEl) viewEl.classList.add('active');
+        
+        // Nav-Buttons umschalten
         document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
         btn.classList.add('active');
-        if(v==='map') setTimeout(()=>map.invalidateSize(), 200);
+        
+        // Spezial-Logik für bestimmte Views
+        if(v === 'map') setTimeout(()=>map.invalidateSize(), 200);
+        
+        // NEU: Wenn Schleusen-Tab, dann Liste neu berechnen/rendern
+        if(v === 'locks') renderLockList(); 
     }
     
     // SAR Logic
@@ -11467,35 +11728,125 @@ function buildGraph() {
         updateSar();
         sarInt = setInterval(updateSar, 60000);
     }
+    // --- UPDATED SAR LOGIK (Strikte Flussrichtung) ---
     function updateSar() {
-        const diff = Math.floor((new Date() - sarStart) / 60000);
-        
-        let shiftLat = 0;
-        let shiftLng = 0;
-        const driftFactor = 0.00005 * Math.abs(trendDiff); 
-        
-        if (trendDiff < 0) {
-            // Ebb -> Drift West/North-West
-            shiftLat = 0.0002 * diff; 
-            shiftLng = -0.0005 * diff;
-        } else {
-             // Flood -> Drift East/South-East
-            shiftLat = -0.0002 * diff;
-            shiftLng = 0.0005 * diff;
-        }
-        
-        const newLat = sarPt.lat + shiftLat;
-        const newLng = sarPt.lng + shiftLng;
-        const driftPos = L.latLng(newLat, newLng);
+        if(!sarRunning || !sarPt || !sarStart) return;
 
+        const elapsedMin = (new Date() - sarStart) / 60000;
+        if(elapsedMin <= 0) return;
+
+        // 1. Strömung & Distanz
+        const flowSpeedMs = 0.2 + (Math.abs(trendDiff) * 0.05); 
+        const totalDistMeters = flowSpeedMs * 60 * elapsedMin;
+
+        // 2. Startknoten
+        const startNodeId = findNearest(sarPt);
+        if(!startNodeId) return;
+
+        // 3. Fließrichtung bestimmen
+        // trendDiff < 0 = Ebbe (Wasser fließt nach Westen -> Longitude wird kleiner)
+        const isEbbe = trendDiff < 0; 
+
+        let activePaths = []; 
+        
+        let queue = [{
+            id: startNodeId,
+            distSoFar: 0,
+            pathPoints: [L.latLng(graph[startNodeId].lat, graph[startNodeId].lng)]
+        }];
+
+        while(queue.length > 0) {
+            let curr = queue.shift();
+            let currNode = graph[curr.id];
+
+            // A) Distanzlimit erreicht?
+            if(curr.distSoFar >= totalDistMeters) {
+                activePaths.push(curr.pathPoints);
+                continue;
+            }
+
+            let foundNext = false;
+
+            // B) Nachbarn prüfen
+            currNode.edges.forEach(edge => {
+                let neighborId = edge.target;
+                let neighborNode = graph[neighborId];
+                
+                // --- STRIKTE RICHTUNGSPRÜFUNG ---
+                let isDirectionCorrect = false;
+
+                if(isEbbe) {
+                    // EBBE: Ziel muss westlicher sein (kleinere Longitude)
+                    // +0.0002 Toleranz erlaubt minimale Abweichung für fast gerade Nord-Süd Kanäle
+                    if(neighborNode.lng <= currNode.lng + 0.0002) {
+                        isDirectionCorrect = true;
+                    }
+                } else {
+                    // FLUT: Ziel muss östlicher sein (größere Longitude)
+                    if(neighborNode.lng >= currNode.lng - 0.0002) {
+                        isDirectionCorrect = true;
+                    }
+                }
+                // --------------------------------
+
+                // Prüfen ob Knoten schon im aktuellen Pfad ist (Verhindert Rückwärtslaufen im Kreis)
+                const alreadyVisited = curr.pathPoints.some(p => p.lat === neighborNode.lat && p.lng === neighborNode.lng);
+
+                if (!alreadyVisited && isDirectionCorrect) {
+                    foundNext = true;
+                    
+                    let nextPt = L.latLng(neighborNode.lat, neighborNode.lng);
+                    let newDist = curr.distSoFar + edge.dist;
+                    
+                    // Neuen Pfad abzweigen
+                    let newPath = [...curr.pathPoints, nextPt];
+                    
+                    queue.push({
+                        id: neighborId,
+                        distSoFar: newDist,
+                        pathPoints: newPath
+                    });
+                }
+            });
+
+            // Wenn es hier nicht weitergeht (Sackgasse oder Ende des Graphen)
+            if(!foundNext) {
+                activePaths.push(curr.pathPoints);
+            }
+        }
+
+        // 5. Zeichnen
         routeLayer.clearLayers();
         
-        L.circleMarker(sarPt, {color: 'red', radius: 3}).addTo(routeLayer);
-        L.polyline([sarPt, driftPos], {color: 'yellow', dashArray: '5,5'}).addTo(routeLayer);
+        // Gestrichelte Linie zum Einstiegspunkt
+        const startNodeLL = L.latLng(graph[startNodeId].lat, graph[startNodeId].lng);
+        L.polyline([sarPt, startNodeLL], {color: 'yellow', dashArray: '2,5', weight: 2}).addTo(routeLayer);
+        L.circleMarker(sarPt, {color: 'red', radius: 4}).bindPopup("Sichtung").addTo(routeLayer);
 
-        const r = 50 + (diff * 10);
-        L.circle(driftPos, {color: '#facc15', radius: r}).addTo(routeLayer)
-         .bindPopup("SUCHGEBIET<br>Driftzeit: "+diff+" min").openPopup();
+        // Alle möglichen Drift-Pfade zeichnen
+        if(activePaths.length > 0) {
+            activePaths.forEach(pts => {
+                // Pfad zeichnen
+                L.polyline(pts, {color: '#facc15', weight: 6, opacity: 0.7}).addTo(routeLayer);
+                
+                // Suchradius am Ende jedes Pfades
+                let endPt = pts[pts.length-1];
+                let searchRadius = 50 + (elapsedMin * 10); 
+                
+                L.circle(endPt, {
+                    color: '#facc15', weight: 1, fillColor: '#facc15', fillOpacity: 0.4, radius: searchRadius
+                }).bindPopup(`
+                    <b>SUCHGEBIET</b><br>
+                    Drift: ${Math.round(elapsedMin)} min<br>
+                    Distanz: ${(totalDistMeters/1000).toFixed(2)} km
+                `).addTo(routeLayer);
+            });
+        } else {
+            // Fallback, falls gar keine Richtung passt (z.B. direkt an einer Kante)
+            L.circle(startNodeLL, {color:'orange', radius: 50}).addTo(routeLayer).bindPopup("Keine Drift möglich (Gegenströmung?)");
+        }
+        
+        document.getElementById('btn-sar-main').innerHTML = `⏳ ${Math.round(elapsedMin)} MIN<br><span style="font-size:0.7em">DRIFT: ${(totalDistMeters/1000).toFixed(2)} KM</span>`;
     }
     function closeModal() { document.getElementById('sar-modal').style.display='none'; }
 
