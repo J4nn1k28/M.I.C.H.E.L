@@ -279,6 +279,25 @@
         </div>
     </div>
 
+    <div id="nav-mode-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9100; justify-content:center; align-items:center; backdrop-filter:blur(3px);">
+        <div class="sys-msg-box">
+            <h3 style="margin-top:0; border-bottom:1px solid var(--border); padding-bottom:10px;">ROUTING MODUS</h3>
+            <p style="color:var(--dim); font-size:0.9em; margin-bottom:20px;">Art der Fahrt wählen:</p>
+            
+            <button onclick="setNavType(false)" style="width:100%; padding:15px; margin-bottom:10px; background:var(--panel); border:1px solid var(--border); color:var(--text); font-weight:bold; border-radius:6px;">
+                ⚓ STANDARD / ÜBUNG
+                <br><span style="font-size:0.7em; font-weight:normal; color:var(--dim)">(Beachtet Sperrungen)</span>
+            </button>
+            
+            <button onclick="setNavType(true)" style="width:100%; padding:15px; background:var(--alert); border:none; color:#fff; font-weight:bold; border-radius:6px; box-shadow:0 0 15px rgba(239, 68, 68, 0.4);">
+                🚨 EINSATZFAHRT
+                <br><span style="font-size:0.7em; font-weight:normal; opacity:0.8">(Ignoriert Sperrungen)</span>
+            </button>
+            
+            <button onclick="cancelNavSetup()" style="margin-top:15px; background:transparent; border:none; color:var(--dim); text-decoration:underline;">Abbrechen</button>
+        </div>
+    </div>
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-ant-path@1.3.0/dist/leaflet-ant-path.js"></script>
     <script src="https://unpkg.com/leaflet-geometryutil@0.9.3/src/leaflet.geometryutil.js"></script>
@@ -4607,7 +4626,7 @@ const connections = [
   "w163",
   {
    "name": "Wandrahmsfleet",
-   "type": "barrier"
+   blocked: true
   }
  ],
  [
@@ -4657,7 +4676,7 @@ const connections = [
   "w138",
   {
    "name": "Broottorkaibrücke",
-   "type": "barrier"
+   blocked: true
   }
  ],
  [
@@ -5409,7 +5428,7 @@ const connections = [
   "w274",
   {
    "name": "Hovekanal",
-   "type": "barrier"
+   blocked: true
   }
  ],
  [
@@ -5431,7 +5450,7 @@ const connections = [
   "w266",
   {
    "name": "Moorkanal",
-   "type": "barrier"
+   blocked: true
   }
  ],
  [
@@ -5460,7 +5479,7 @@ const connections = [
   "w263",
   {
    "name": "Hovekanal",
-   "type": "barrier"
+   blocked: true
   }
  ],
  [
@@ -6910,7 +6929,7 @@ const connections = [
   "w490",
   {
    "name": "Seehafen 4",
-   "type": "barrier"
+   blocked: true
   }
  ],
  [
@@ -6918,7 +6937,7 @@ const connections = [
   "w491",
   {
    "name": "Seehafen 4",
-   "type": "barrier"
+   blocked: true
   }
  ],
  [
@@ -7342,7 +7361,7 @@ const connections = [
   "w551",
   {
    "name": "Rugenberger Schleuse",
-   "type": "barrier"
+   blocked: true
   }
  ],
  [
@@ -8615,7 +8634,7 @@ const connections = [
   "w733",
   "w742",
   {
-   "type": "barrier"
+   blocked: true
   }
  ],
  [
@@ -10578,6 +10597,7 @@ VB2#DE__508P# #H#Do#31.12.2026#22:16# 6.89 # #365#+ 1:00#  27171#   1#2461406.38
     let currentSpeed = 0;
     let navPath = [];
     let nextWpIndex = 0;
+    let isEmergency = false; // Speichert den Status der aktuellen Fahrt
 
     // INIT
     window.onload = function() {
@@ -10645,30 +10665,46 @@ VB2#DE__508P# #H#Do#31.12.2026#22:16# 6.89 # #365#+ 1:00#  27171#   1#2461406.38
     function buildGraph() {
         graph = {};
         if(Object.keys(waypoints).length === 0) return;
+
+        // Speed Zones (aus vorherigem Schritt)
+        const speedZones = [
+            { name: "Norderelbe", factor: 0.5 },
+            { name: "Süderelbe", factor: 0.5 },
+            { name: "Köhlbrand", factor: 0.6 },
+            { name: "Elbe", factor: 0.6 }
+        ];
         
-        // Knoten erstellen
         for (let id in waypoints) {
             graph[id] = { id: id, lat: waypoints[id][0], lng: waypoints[id][1], edges: [] };
         }
         
-        // Kanten (Connections) verarbeiten
         connections.forEach(conn => {
             const a = conn[0];
             const b = conn[1];
             
-            // HIER IST DIE ÄNDERUNG:
-            // Wir schauen in das Objekt an Stelle 2 (conn[2]) und holen .name
+            // Daten aus Objekt lesen
             let name = "";
-            if (conn[2] && conn[2].name) {
-                name = conn[2].name;
+            let blocked = false; // Standard: Offen
+            
+            if (conn[2]) {
+                if(conn[2].name) name = conn[2].name;
+                if(conn[2].blocked) blocked = true; // Sperrung lesen
             }
 
             if(graph[a] && graph[b]) {
-                const dist = map.distance([graph[a].lat, graph[a].lng], [graph[b].lat, graph[b].lng]);
+                const realDist = map.distance([graph[a].lat, graph[a].lng], [graph[b].lat, graph[b].lng]);
                 
-                // Name wird im Graph gespeichert, damit Routing ihn findet
-                graph[a].edges.push({ target: b, dist: dist, name: name });
-                graph[b].edges.push({ target: a, dist: dist, name: name });
+                let factor = 1.0;
+                if (name) {
+                    const zone = speedZones.find(z => name.includes(z.name));
+                    if (zone) factor = zone.factor;
+                }
+
+                const weightedDist = realDist * factor;
+
+                // WICHTIG: Wir speichern 'blocked' im Graphen
+                graph[a].edges.push({ target: b, dist: weightedDist, name: name, blocked: blocked });
+                graph[b].edges.push({ target: a, dist: weightedDist, name: name, blocked: blocked });
             }
         });
     }
@@ -10700,6 +10736,14 @@ VB2#DE__508P# #H#Do#31.12.2026#22:16# 6.89 # #365#+ 1:00#  27171#   1#2461406.38
             if(u === endId) break;
 
             graph[u].edges.forEach(e => {
+                
+                // --- SPERR-LOGIK ---
+                // Wenn Kante gesperrt ist UND wir KEIN Blaulicht haben -> Überspringen
+                if (e.blocked && !isEmergency) {
+                    return; // "continue" im loop
+                }
+                // -------------------
+
                 let alt = dists[u] + e.dist;
                 if(alt < dists[e.target]) {
                     dists[e.target] = alt;
@@ -10711,14 +10755,17 @@ VB2#DE__508P# #H#Do#31.12.2026#22:16# 6.89 # #365#+ 1:00#  27171#   1#2461406.38
 
         let path = [], names = [], u = endId;
         
-        // Pfad und Namen rekonstruieren
+        // Prüfen ob überhaupt ein Weg gefunden wurde (falls alles gesperrt ist)
+        if(dists[endId] === Infinity) {
+            showSysMsg("Ziel aufgrund von Sperrungen nicht erreichbar!", "ROUTING FEHLER");
+            return { path: [startLL, endLL], names: [] }; // Fallback Luftlinie
+        }
+
         if(prev[u] || u === startId) {
             while(u) { 
                 path.unshift(L.latLng(graph[u].lat, graph[u].lng));
-                
                 const p = prev[u];
                 if(p) {
-                    // Kante suchen, um den Namen zu finden
                     const edge = graph[p].edges.find(e => e.target === u);
                     names.unshift(edge ? edge.name : "");
                 }
@@ -10736,19 +10783,45 @@ VB2#DE__508P# #H#Do#31.12.2026#22:16# 6.89 # #365#+ 1:00#  27171#   1#2461406.38
     }
 
     // --- INTERACTION ---
+    // Ersetzt die alte toggleNavMode Funktion
     function toggleNavMode() {
-        navMode = !navMode;
-        const btn = document.getElementById('btn-nav');
         if(navMode) {
-            btn.classList.add('active');
-            map.getContainer().style.cursor = 'crosshair';
-            autoCenter = false; 
-            document.getElementById('btn-center').classList.remove('active');
-            document.getElementById('map').style.transform = `rotate(0deg)`;
-            showSysMsg("Klicke jetzt auf die Karte, um dein ZIEL zu setzen.", "NAVIGATION START");
-        } else {
+            // Wenn an -> Ausschalten
             stopNavigation();
+        } else {
+            // Wenn aus -> Frage nach Modus
+            document.getElementById('nav-mode-overlay').style.display = 'flex';
         }
+    }
+
+    function setNavType(emergency) {
+        isEmergency = emergency;
+        document.getElementById('nav-mode-overlay').style.display = 'none';
+        
+        // Jetzt den Modus aktivieren
+        navMode = true;
+        const btn = document.getElementById('btn-nav');
+        btn.classList.add('active');
+        
+        // Optisches Feedback für Einsatzmodus
+        if(isEmergency) {
+            btn.style.background = "var(--alert)";
+            btn.style.borderColor = "#fff";
+            showSysMsg("EINSATZ-MODUS AKTIV.\nSperrungen werden ignoriert.\nKlicke auf das ZIEL.", "🚨 EINSATZ");
+        } else {
+            btn.style.background = ""; // Reset
+            showSysMsg("Klicke jetzt auf die Karte, um dein ZIEL zu setzen.", "ROUTING");
+        }
+        
+        // Map Setup
+        map.getContainer().style.cursor = 'crosshair';
+        autoCenter = false; 
+        document.getElementById('btn-center').classList.remove('active');
+        document.getElementById('map').style.transform = `rotate(0deg)`;
+    }
+
+    function cancelNavSetup() {
+        document.getElementById('nav-mode-overlay').style.display = 'none';
     }
 
     // Globale Variable für die Namen hinzufügen (oben bei den anderen lets)
@@ -10783,7 +10856,13 @@ VB2#DE__508P# #H#Do#31.12.2026#22:16# 6.89 # #365#+ 1:00#  27171#   1#2461406.38
     function stopNavigation() {
         navMode = false;
         navPath = [];
-        document.getElementById('btn-nav').classList.remove('active');
+        isEmergency = false; // Reset Status
+
+        const btn = document.getElementById('btn-nav');
+        btn.classList.remove('active');
+        btn.style.background = ""; // Farbe Reset
+        btn.style.borderColor = "";
+
         document.getElementById('nav-hud').style.display = 'none';
         routeLayer.clearLayers();
         autoCenter = false;
