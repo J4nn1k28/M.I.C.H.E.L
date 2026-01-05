@@ -12055,37 +12055,60 @@ function buildGraph() {
     function connectToAisStream() {
         if(aisSocket) return;
 
+        console.log("Starte Verbindung...");
+        showSysMsg("Verbinde mit Satellit...", "TRAFFIC INIT");
+        
+        // Verbindung aufbauen
         aisSocket = new WebSocket("wss://stream.aisstream.io/v0/stream");
 
+        // 1. WENN DIE TÜR AUFGEHT (onopen) -> NACHRICHT SENDEN
         aisSocket.onopen = function() {
-            showSysMsg("AIS Verbindung hergestellt.", "TRAFFIC ONLINE");
+            console.log("WebSocket offen! Sende Subscription Nachricht...");
+            showSysMsg("Authentifizierung...", "TRAFFIC");
             
-            // Wir abonnieren nur den Bereich Hamburg (Bounding Box)
             const subscription = {
-                Apikey: AIS_API_KEY,
+                APIKey: AIS_API_KEY, // <--- WICHTIG: Groß/Kleinschreibung beachten!
                 BoundingBoxes: [[
-                    [53.40, 9.70], // Süd-West Ecke (ungefähr)
-                    [53.60, 10.30] // Nord-Ost Ecke
+                    [53.40, 9.70], 
+                    [53.65, 10.35]
                 ]],
-                FilterMessageTypes: ["PositionReport"] // Wir wollen nur Positionen
+                FilterMessageTypes: ["PositionReport", "ShipStaticData"] 
             };
-            aisSocket.send(JSON.stringify(subscription));
+            
+            // Nachricht in Text umwandeln und senden
+            const msgString = JSON.stringify(subscription);
+            console.log("Sende:", msgString); // <--- Prüfe das in der Konsole!
+            aisSocket.send(msgString);
         };
 
+        // 2. WENN DATEN KOMMEN
         aisSocket.onmessage = function(event) {
-            const msg = JSON.parse(event.data);
-            if (msg.MessageType === "PositionReport") {
-                updateShipMarker(msg);
+            const response = JSON.parse(event.data);
+            // Wenn wir Daten kriegen, hat es geklappt!
+            if (response.MessageType === "PositionReport") {
+                updateShipPosition(response);
+            } else if (response.MessageType === "ShipStaticData") {
+                updateShipDetails(response);
             }
         };
 
+        // 3. FEHLER
         aisSocket.onerror = function(error) {
-            console.error("AIS Error", error);
-            showSysMsg("AIS Fehler. API Key prüfen?", "FEHLER");
+            console.error("AIS Netzwerk-Fehler:", error);
         };
         
-        aisSocket.onclose = function() {
-            console.log("AIS Stream geschlossen");
+        // 4. VERBINDUNG ABGEBROCHEN
+        aisSocket.onclose = function(event) {
+            console.log("AIS Verbindung geschlossen. Code:", event.code);
+            if(showShips) {
+                if(event.code === 1006) {
+                    showSysMsg("Verbindung abgelehnt! API Key prüfen.", "FEHLER 1006");
+                    console.error("Fehler 1006: Der Server hat die Verbindung sofort beendet. Meistens ist der API Key falsch oder die Subscription Message fehlerhaft.");
+                } else {
+                    showSysMsg("Verbindung verloren. Reconnect...", "AIS NETZWERK");
+                    setTimeout(connectToAisStream, 5000);
+                }
+            }
         };
     }
 
