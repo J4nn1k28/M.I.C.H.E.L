@@ -171,10 +171,15 @@
             <div><span class="hud-val" id="hud-dist">--</span><br><span class="label">NM</span></div>
             <div><span class="hud-val" id="hud-eta">--</span><br><span class="label">ETA</span></div>
         </div>
-        <div id="turn-box">
-            <span style="color:var(--accent); margin-right:5px;" id="turn-dist">-- m</span>
-            <span id="turn-arrow">⬆️</span> 
-            <span style="color:#fff" id="turn-text">KURS HALTEN</span>
+        <div id="turn-box" style="flex-direction: column; gap: 2px;">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span style="color:var(--accent); margin-right:5px;" id="turn-dist">-- m</span>
+                <span id="turn-arrow" style="font-size:1.2em;">⬆️</span> 
+                <span style="color:#fff" id="turn-text">KURS HALTEN</span>
+            </div>
+            <div id="turn-street" style="color:var(--dim); font-size:0.7em; font-weight:normal; text-transform: uppercase; letter-spacing: 1px;">
+                --
+            </div>
         </div>
         <button id="btn-stop-nav" onclick="stopNavigation()">ROUTING BEENDEN</button>
     </div>
@@ -2848,10 +2853,6 @@
     53.52385,
     9.92974
   ],
-  "w644": [
-    53.5209,
-    9.89589
-  ],
   "w645": [
     53.52189,
     9.89207
@@ -2875,10 +2876,6 @@
   "w650": [
     53.54064,
     9.87486
-  ],
-  "w651": [
-    53.52162,
-    9.89411
   ],
   "w652": [
     53.51889,
@@ -3491,26 +3488,64 @@
   "w806": [
     53.43288,
     10.3026
+  ],
+  "w807": [
+    53.4966,
+    9.9807
+  ],
+  "w808": [
+    53.52311,
+    10.00911
+  ],
+  "w809": [
+    53.53835,
+    10.09054
+  ],
+  "w810": [
+    53.55738,
+    9.99762
+  ],
+  "w811": [
+    53.51943,
+    9.89039
+  ],
+  "w812": [
+    53.52057,
+    9.89227
+  ],
+  "w813": [
+    53.52057,
+    9.89695
   ]
 };
-
-    
-    const connections = [
+const connections = [
  [
   "w1",
-  "w7"
+  "w7",
+  {
+   "name": "Billwerder Bucht"
+  }
  ],
  [
   "w7",
-  "w8"
+  "w8",
+  {
+   "name": "Billwerder Bucht"
+  }
  ],
  [
   "w8",
-  "w9"
+  "w9",
+  {
+   "name": "Billwerder Bucht"
+  }
  ],
  [
   "w9",
-  "w23"
+  "w23",
+  {
+   "name": "Tiefstack Kanal"
+  }
  ],
  [
   "w23",
@@ -3522,1778 +3557,3047 @@
  ],
  [
   "w24",
-  "w25"
+  "w25",
+  {
+   "name": "Tiefstack Kanal"
+  }
  ],
  [
   "w25",
-  "w26"
+  "w26",
+  {
+   "name": "Tiefstack Kanal"
+  }
  ],
  [
   "w26",
-  "w60"
+  "w60",
+  {
+   "name": "Tiefstack Kanal"
+  }
  ],
  [
   "w60",
-  "w27"
+  "w27",
+  {
+   "name": "Tiefstack Kanal"
+  }
  ],
  [
   "w27",
-  "w61"
+  "w61",
+  {
+   "name": "Billekanal"
+  }
  ],
  [
   "w61",
-  "w63"
+  "w63",
+  {
+   "name": "Billekanal"
+  }
  ],
  [
   "w63",
-  "w62"
+  "w62",
+  {
+   "name": "Billekanal"
+  }
  ],
  [
   "w62",
-  "w64"
+  "w64",
+  {
+   "name": "Billekanal"
+  }
  ],
  [
   "w64",
-  "w65"
+  "w65",
+  {
+   "name": "Billekanal"
+  }
  ],
  [
   "w65",
-  "w66"
+  "w66",
+  {
+   "name": "Billekanal"
+  }
  ],
  [
   "w66",
-  "w67"
+  "w67",
+  {
+   "name": "Billekanal"
+  }
  ],
  [
   "w67",
-  "w68"
+  "w68",
+  {
+   "name": "Billekanal"
+  }
  ],
  [
   "w68",
-  "w69"
- ],
- [
   "w69",
-  "w117"
+  {
+   "name": "Billekanal"
+  }
  ],
  [
   "w118",
-  "w117"
+  "w117",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w118",
-  "w119"
+  "w119",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w119",
-  "w120"
+  "w120",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w120",
-  "w121"
+  "w121",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w121",
-  "w122"
+  "w122",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w122",
-  "w123"
+  "w123",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w123",
-  "w124"
+  "w124",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w124",
-  "w108"
+  "w108",
+  {
+   "name": "Rückerskanal"
+  }
  ],
  [
   "w108",
-  "w109"
+  "w109",
+  {
+   "name": "Südkanal"
+  }
  ],
  [
   "w109",
-  "w110"
+  "w110",
+  {
+   "name": "Südkanal"
+  }
  ],
  [
   "w110",
-  "w111"
+  "w111",
+  {
+   "name": "Südkanal"
+  }
  ],
  [
   "w111",
-  "w112"
+  "w112",
+  {
+   "name": "Südkanal"
+  }
  ],
  [
   "w112",
-  "w113"
+  "w113",
+  {
+   "name": "Südkanal"
+  }
  ],
  [
   "w113",
-  "w114"
+  "w114",
+  {
+   "name": "Südkanal"
+  }
  ],
  [
   "w114",
-  "w115"
+  "w115",
+  {
+   "name": "Südkanal"
+  }
  ],
  [
   "w115",
-  "w116"
+  "w116",
+  {
+   "name": "Südkanal"
+  }
  ],
  [
   "w116",
-  "w95"
+  "w95",
+  {
+   "name": "Südkanal"
+  }
  ],
  [
   "w95",
-  "w96"
+  "w96",
+  {
+   "name": "Südkanal"
+  }
  ],
  [
   "w95",
-  "w93"
+  "w93",
+  {
+   "name": "Hochwasserbassin"
+  }
  ],
  [
   "w93",
-  "w94"
+  "w94",
+  {
+   "name": "Hochwasserbassin"
+  }
  ],
  [
   "w93",
-  "w92"
+  "w92",
+  {
+   "name": "Mittelkanal"
+  }
  ],
  [
   "w92",
-  "w91"
+  "w91",
+  {
+   "name": "Mittelkanal"
+  }
  ],
  [
   "w91",
-  "w89"
+  "w89",
+  {
+   "name": "Mittelkanal"
+  }
  ],
  [
   "w89",
-  "w90"
+  "w90",
+  {
+   "name": "Sonninkanal"
+  }
  ],
  [
   "w89",
-  "w88"
+  "w88",
+  {
+   "name": "Schleusenkanal"
+  }
  ],
  [
   "w88",
-  "w87"
+  "w87",
+  {
+   "name": "Hammerbrookschleuse",
+   "type": "lock",
+   "open": "[keine]"
+  }
  ],
  [
   "w93",
-  "w98"
+  "w98",
+  {
+   "name": "Mittelkanal"
+  }
  ],
  [
   "w98",
-  "w99"
+  "w99",
+  {
+   "name": "Mittelkanal"
+  }
  ],
  [
   "w99",
-  "w100"
+  "w100",
+  {
+   "name": "Mittelkanal"
+  }
  ],
  [
   "w100",
-  "w101"
+  "w101",
+  {
+   "name": "Mittelkanal"
+  }
  ],
  [
   "w101",
-  "w102"
+  "w102",
+  {
+   "name": "Mittelkanal"
+  }
  ],
  [
   "w102",
-  "w103"
+  "w103",
+  {
+   "name": "Mittelkanal"
+  }
  ],
  [
   "w103",
-  "w104"
+  "w104",
+  {
+   "name": "Mittelkanal"
+  }
  ],
  [
   "w104",
-  "w105"
+  "w105",
+  {
+   "name": "Mittelkanal"
+  }
  ],
  [
   "w105",
-  "w106"
+  "w106",
+  {
+   "name": "Mittelkanal"
+  }
  ],
  [
   "w106",
-  "w107"
+  "w107",
+  {
+   "name": "Mittelkanal"
+  }
  ],
  [
   "w107",
-  "w108"
+  "w108",
+  {
+   "name": "Rückerskanal"
+  }
  ],
  [
   "w107",
-  "w253"
+  "w253",
+  {
+   "name": "Mittelkanal"
+  }
  ],
  [
   "w124",
-  "w135"
+  "w135",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w135",
-  "w134"
+  "w134",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w134",
-  "w133"
+  "w133",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w133",
-  "w132"
+  "w132",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w132",
-  "w131"
+  "w131",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w131",
-  "w130"
+  "w130",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w130",
-  "w129"
+  "w129",
+  {
+   "name": "Bullenhuser Kanal"
+  }
  ],
  [
   "w129",
-  "w128"
+  "w128",
+  {
+   "name": "Bullenhuser Kanal"
+  }
  ],
  [
   "w128",
-  "w127"
+  "w127",
+  {
+   "name": "Bullenhuser Kanal"
+  }
  ],
  [
   "w127",
-  "w126"
+  "w126",
+  {
+   "name": "Bullenhuser Kanal"
+  }
  ],
  [
   "w126",
-  "w125"
+  "w125",
+  {
+   "name": "Bullenhuser Kanal"
+  }
  ],
  [
   "w125",
-  "w120"
- ],
- [
-  "w130",
-  "w136"
+  "w120",
+  {
+   "name": "Bullenhuser Kanal"
+  }
  ],
  [
   "w136",
-  "w32"
+  "w32",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w32",
-  "w27"
+  "w27",
+  {
+   "name": "Tiefstack Kanal"
+  }
  ],
  [
   "w27",
-  "w254"
+  "w254",
+  {
+   "name": "Billbrookkanal"
+  }
  ],
  [
   "w254",
-  "w28"
+  "w28",
+  {
+   "name": "Billbrookkanal"
+  }
  ],
  [
   "w28",
-  "w29"
+  "w29",
+  {
+   "name": "Billbrookkanal"
+  }
  ],
  [
   "w29",
-  "w30"
+  "w30",
+  {
+   "name": "Billbrookkanal"
+  }
  ],
  [
   "w30",
-  "w31"
+  "w31",
+  {
+   "name": "Billbrookkanal"
+  }
  ],
  [
   "w32",
-  "w33"
+  "w33",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w33",
-  "w34"
+  "w34",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w34",
-  "w35"
+  "w35",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w35",
-  "w36"
+  "w36",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w36",
-  "w37"
+  "w37",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w37",
-  "w38"
- ],
- [
   "w38",
-  "w39"
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w39",
-  "w40"
+  "w40",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w40",
-  "w41"
+  "w41",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w41",
-  "w42"
+  "w42",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w42",
-  "w43"
+  "w43",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w43",
-  "w44"
+  "w44",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w44",
-  "w45"
+  "w45",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w45",
-  "w46"
+  "w46",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w46",
-  "w47"
+  "w47",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w47",
-  "w48"
+  "w48",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w48",
-  "w49"
+  "w49",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w49",
-  "w50"
+  "w50",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w50",
-  "w51"
+  "w51",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w51",
-  "w52"
+  "w52",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w52",
-  "w53"
+  "w53",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w53",
-  "w54"
+  "w54",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w54",
-  "w55"
+  "w55",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w55",
-  "w56"
+  "w56",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w56",
-  "w57"
+  "w57",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w57",
-  "w58"
+  "w58",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w58",
-  "w59"
+  "w59",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w14",
-  "w15"
+  "w15",
+  {
+   "name": "Moorfleeter Kanal"
+  }
  ],
  [
   "w15",
-  "w255"
+  "w255",
+  {
+   "name": "Tidekanal"
+  }
  ],
  [
   "w255",
-  "w256"
+  "w256",
+  {
+   "name": "Tidekanal"
+  }
  ],
  [
   "w256",
-  "w16"
+  "w16",
+  {
+   "name": "Tidekanal"
+  }
  ],
  [
   "w16",
-  "w19"
+  "w19",
+  {
+   "name": "Industriekanal"
+  }
  ],
  [
   "w19",
-  "w20"
+  "w20",
+  {
+   "name": "Industriekanal"
+  }
  ],
  [
   "w16",
-  "w21"
+  "w21",
+  {
+   "name": "Tidekanal"
+  }
  ],
  [
   "w21",
-  "w22"
+  "w22",
+  {
+   "name": "Tidekanal"
+  }
  ],
  [
   "w15",
-  "w257"
+  "w257",
+  {
+   "name": "Moorfleeter Kanal"
+  }
  ],
  [
   "w257",
-  "w17"
+  "w17",
+  {
+   "name": "Moorfleeter Kanal"
+  }
  ],
  [
   "w17",
-  "w18"
+  "w18",
+  {
+   "name": "Moorfleeter Kanal"
+  }
  ],
  [
   "w1",
-  "w2"
+  "w2",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w2",
-  "w81"
+  "w81",
+  {
+   "name": "Oberhafenkanal"
+  }
  ],
  [
   "w81",
-  "w258"
+  "w258",
+  {
+   "name": "Haken"
+  }
  ],
  [
   "w258",
-  "w259"
+  "w259",
+  {
+   "name": "Haken"
+  }
  ],
  [
   "w81",
-  "w80"
+  "w80",
+  {
+   "name": "Oberhafenkanal"
+  }
  ],
  [
   "w80",
-  "w79"
+  "w79",
+  {
+   "name": "Oberhafenkanal"
+  }
  ],
  [
   "w79",
-  "w82"
+  "w82",
+  {
+   "name": "Oberhafenkanal"
+  }
  ],
  [
   "w82",
-  "w78"
+  "w78",
+  {
+   "name": "Oberhafenkanal"
+  }
  ],
  [
   "w78",
-  "w79"
+  "w79",
+  {
+   "name": "Oberhafenkanal"
+  }
  ],
  [
   "w78",
-  "w77"
+  "w77",
+  {
+   "name": "Brandshofer Schleuse",
+   "type": "lock",
+   "open": "Mo-Di 6-18 Uhr / Do-Fr 6-18 Uhr"
+  }
  ],
  [
   "w77",
-  "w75"
+  "w75",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w75",
-  "w76"
+  "w76",
+  {
+   "name": "Billhorner Kanal"
+  }
  ],
  [
   "w75",
-  "w74"
+  "w74",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w74",
-  "w73"
+  "w73",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w73",
-  "w72"
+  "w72",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w72",
-  "w71"
+  "w71",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w71",
-  "w70"
+  "w70",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w70",
-  "w69"
+  "w69",
+  {
+   "name": "Bille"
+  }
  ],
  [
   "w95",
-  "w97"
+  "w97",
+  {
+   "name": "Hochwasserbassin"
+  }
  ],
  [
   "w97",
-  "w260"
+  "w260",
+  {
+   "name": "Hochwasserbassin"
+  }
  ],
  [
   "w260",
-  "w71"
+  "w71",
+  {
+   "name": "Hochwasserbassin"
+  }
  ],
  [
   "w82",
-  "w83"
+  "w83",
+  {
+   "name": "Oberhafenkanal"
+  }
  ],
  [
   "w83",
-  "w84"
+  "w84",
+  {
+   "name": "Oberhafenkanal"
+  }
  ],
  [
   "w84",
-  "w85"
+  "w85",
+  {
+   "name": "Oberhafenkanal"
+  }
  ],
  [
   "w85",
-  "w86"
+  "w86",
+  {
+   "name": "Oberhafenkanal"
+  }
  ],
  [
   "w86",
-  "w87"
+  "w87",
+  {
+   "name": "Oberhafenkanal"
+  }
  ],
  [
   "w87",
-  "w172"
+  "w172",
+  {
+   "name": "Oberhafenkanal"
+  }
  ],
  [
   "w172",
-  "w171"
+  "w171",
+  {
+   "name": "Oberhafenkanal"
+  }
  ],
  [
   "w171",
-  "w167"
+  "w167",
+  {
+   "name": "Oberhafenkanal"
+  }
  ],
  [
   "w167",
-  "w170"
+  "w170",
+  {
+   "name": "Oberhafenkanal"
+  }
  ],
  [
   "w170",
-  "w169"
+  "w169",
+  {
+   "name": "Zollkanal"
+  }
  ],
  [
   "w169",
-  "w168"
+  "w168",
+  {
+   "name": "Zollkanal"
+  }
  ],
  [
   "w168",
-  "w156"
+  "w156",
+  {
+   "name": "Zollkanal"
+  }
  ],
  [
   "w156",
-  "w155"
+  "w155",
+  {
+   "name": "Zollkanal"
+  }
  ],
  [
   "w155",
-  "w154"
+  "w154",
+  {
+   "name": "Zollkanal"
+  }
  ],
  [
   "w154",
-  "w153"
+  "w153",
+  {
+   "name": "Zollkanal"
+  }
  ],
  [
   "w153",
-  "w152"
+  "w152",
+  {
+   "name": "Zollkanal"
+  }
  ],
  [
   "w152",
-  "w151"
+  "w151",
+  {
+   "name": "Kleines Fleet"
+  }
  ],
  [
   "w151",
-  "w159"
+  "w159",
+  {
+   "name": "Wandrahmsfleet"
+  }
  ],
  [
   "w159",
-  "w158"
+  "w158",
+  {
+   "name": "Wandrahmsfleet"
+  }
  ],
  [
   "w158",
-  "w157"
+  "w157",
+  {
+   "name": "Wandrahmsfleet"
+  }
  ],
  [
   "w157",
-  "w156"
+  "w156",
+  {
+   "name": "Kleine Wandrahmsbrücke"
+  }
  ],
  [
   "w157",
   "w163",
   {
+   "name": "Wandrahmsfleet",
    "type": "barrier"
   }
  ],
  [
   "w163",
-  "w165"
+  "w165",
+  {
+   "name": "Wandrahmsfleet"
+  }
  ],
  [
   "w165",
-  "w166"
+  "w166",
+  {
+   "name": "Wandrahmsfleet"
+  }
  ],
  [
   "w166",
-  "w167"
+  "w167",
+  {
+   "name": "Wandrahmsfleet"
+  }
  ],
  [
   "w165",
-  "w164"
+  "w164",
+  {
+   "name": "Hollandischbrookfleet"
+  }
  ],
  [
   "w164",
-  "w162"
+  "w162",
+  {
+   "name": "Hollandischbrookfleet"
+  }
  ],
  [
   "w162",
-  "w161"
+  "w161",
+  {
+   "name": "Hollandischbrookfleet"
+  }
  ],
  [
   "w161",
   "w138",
   {
+   "name": "Broottorkaibrücke",
    "type": "barrier"
   }
  ],
  [
   "w138",
-  "w261"
+  "w261",
+  {
+   "name": "Brooktorhafen"
+  }
  ],
  [
   "w261",
-  "w262"
+  "w262",
+  {
+   "name": "Ericusgraben"
+  }
  ],
  [
   "w262",
-  "w137"
+  "w137",
+  {
+   "name": "Ericusgraben"
+  }
  ],
  [
   "w137",
-  "w172"
+  "w172",
+  {
+   "name": "Ericusgraben"
+  }
  ],
  [
   "w138",
-  "w139"
+  "w139",
+  {
+   "name": "Brooktorhafen"
+  }
  ],
  [
   "w139",
-  "w140"
+  "w140",
+  {
+   "name": "Magdeburger Hafen"
+  }
  ],
  [
   "w140",
-  "w141"
+  "w141",
+  {
+   "name": "Magdeburger Hafen"
+  }
  ],
  [
   "w141",
-  "w142"
+  "w142",
+  {
+   "name": "Magdeburger Hafen"
+  }
  ],
  [
   "w142",
-  "w143"
+  "w143",
+  {
+   "name": "Baakenhafen"
+  }
  ],
  [
   "w143",
-  "w144"
+  "w144",
+  {
+   "name": "Baakenhafen"
+  }
  ],
  [
   "w144",
-  "w145"
+  "w145",
+  {
+   "name": "Baakenhafen"
+  }
  ],
  [
   "w145",
-  "w146"
+  "w146",
+  {
+   "name": "Baakenhafen"
+  }
  ],
  [
   "w146",
-  "w147"
+  "w147",
+  {
+   "name": "Baakenhafen"
+  }
  ],
  [
   "w147",
-  "w148"
+  "w148",
+  {
+   "name": "Baakenhafen"
+  }
  ],
  [
   "w148",
-  "w149"
+  "w149",
+  {
+   "name": "Baakenhafen"
+  }
  ],
  [
   "w142",
-  "w4"
+  "w4",
+  {
+   "name": "Baakenhafen"
+  }
  ],
  [
   "w161",
-  "w160"
+  "w160",
+  {
+   "name": "St. Annenfleet"
+  }
  ],
  [
   "w160",
-  "w150"
+  "w150",
+  {
+   "name": "St. Annenfleet"
+  }
  ],
  [
   "w150",
-  "w151"
+  "w151",
+  {
+   "name": "Kleines Fleet"
+  }
  ],
  [
   "w150",
-  "w240"
+  "w240",
+  {
+   "name": "Brooksfleet"
+  }
  ],
  [
   "w240",
-  "w239"
+  "w239",
+  {
+   "name": "Brooksfleet"
+  }
  ],
  [
   "w239",
-  "w238"
+  "w238",
+  {
+   "name": "Brooksfleet"
+  }
  ],
  [
   "w238",
-  "w237"
+  "w237",
+  {
+   "name": "Brooksfleet"
+  }
  ],
  [
   "w237",
-  "w236"
+  "w236",
+  {
+   "name": "Brooksfleet"
+  }
  ],
  [
   "w236",
-  "w235"
+  "w235",
+  {
+   "name": "Kehrwiederfleet"
+  }
  ],
  [
   "w235",
-  "w234"
+  "w234",
+  {
+   "name": "Kehrwiederfleet"
+  }
  ],
  [
   "w234",
-  "w233"
+  "w233",
+  {
+   "name": "Kehrwiederfleet"
+  }
  ],
  [
   "w233",
-  "w232"
+  "w232",
+  {
+   "name": "Kehrwiederfleet"
+  }
  ],
  [
   "w232",
-  "w231"
+  "w231",
+  {
+   "name": "Kehrwiederfleet"
+  }
  ],
  [
   "w231",
-  "w230"
+  "w230",
+  {
+   "name": "Kehrwiederfleet"
+  }
  ],
  [
   "w152",
-  "w173"
+  "w173",
+  {
+   "name": "Zollkanal"
+  }
  ],
  [
   "w173",
-  "w174"
+  "w174",
+  {
+   "name": "Binnenhafen"
+  }
  ],
  [
   "w174",
-  "w175"
+  "w175",
+  {
+   "name": "Binnenhafen"
+  }
  ],
  [
   "w175",
-  "w180"
+  "w180",
+  {
+   "name": "Nikolaifleet"
+  }
  ],
  [
   "w180",
-  "w176"
+  "w176",
+  {
+   "name": "Nikolaifleet"
+  }
  ],
  [
   "w176",
-  "w177"
+  "w177",
+  {
+   "name": "Binnenhafen"
+  }
  ],
  [
   "w177",
-  "w178"
+  "w178",
+  {
+   "name": "Binnenhafen"
+  }
  ],
  [
   "w178",
-  "w179"
+  "w179",
+  {
+   "name": "Binnenhafen"
+  }
  ],
  [
   "w176",
-  "w175"
+  "w175",
+  {
+   "name": "Binnenhafen"
+  }
  ],
  [
   "w180",
-  "w181"
+  "w181",
+  {
+   "name": "Nikolaifleet"
+  }
  ],
  [
   "w181",
-  "w182"
+  "w182",
+  {
+   "name": "Nikolaifleet"
+  }
  ],
  [
   "w182",
-  "w183"
+  "w183",
+  {
+   "name": "Nikolaifleet"
+  }
  ],
  [
   "w183",
-  "w184"
+  "w184",
+  {
+   "name": "Nikolaifleet"
+  }
  ],
  [
   "w184",
-  "w185"
+  "w185",
+  {
+   "name": "Nikolaifleet"
+  }
  ],
  [
   "w185",
-  "w186"
+  "w186",
+  {
+   "name": "Nikolaifleet"
+  }
  ],
  [
   "w186",
-  "w187"
+  "w187",
+  {
+   "name": "Nikolaifleet"
+  }
  ],
  [
   "w187",
-  "w188"
+  "w188",
+  {
+   "name": "Nikolaifleet"
+  }
  ],
  [
   "w188",
-  "w189"
+  "w189",
+  {
+   "name": "Nikolaifleet"
+  }
  ],
  [
   "w189",
-  "w190"
+  "w190",
+  {
+   "name": "Nikolaifleet"
+  }
  ],
  [
   "w200",
-  "w199"
+  "w199",
+  {
+   "name": "Monkedammfleet"
+  }
  ],
  [
   "w199",
-  "w198"
+  "w198",
+  {
+   "name": "Monkedammfleet"
+  }
  ],
  [
   "w198",
-  "w197"
+  "w197",
+  {
+   "name": "Monkedammfleet"
+  }
  ],
  [
   "w197",
-  "w201"
+  "w201",
+  {
+   "name": "Alsterfleet"
+  }
  ],
  [
   "w201",
-  "w202"
+  "w202",
+  {
+   "name": "Alsterfleet"
+  }
  ],
  [
   "w202",
-  "w203"
+  "w203",
+  {
+   "name": "Alsterfleet"
+  }
  ],
  [
   "w203",
-  "w204"
+  "w204",
+  {
+   "name": "Alsterfleet"
+  }
  ],
  [
   "w204",
-  "w205"
+  "w205",
+  {
+   "name": "Alsterfleet"
+  }
  ],
  [
   "w205",
-  "w206"
+  "w206",
+  {
+   "name": "Kleine Alster"
+  }
  ],
  [
   "w206",
-  "w207"
+  "w207",
+  {
+   "name": "Binnenalster"
+  }
  ],
  [
   "w207",
-  "w208"
- ],
- [
   "w208",
-  "w209"
+  {
+   "name": "Binnenalster"
+  }
  ],
  [
   "w209",
-  "w210"
+  "w210",
+  {
+   "name": "Alster"
+  }
  ],
  [
   "w210",
-  "w211"
+  "w211",
+  {
+   "name": "Alster"
+  }
  ],
  [
   "w211",
-  "w212"
+  "w212",
+  {
+   "name": "Alster"
+  }
  ],
  [
   "w212",
-  "w213"
+  "w213",
+  {
+   "name": "Mundsburger Kanal"
+  }
  ],
  [
   "w213",
-  "w214"
+  "w214",
+  {
+   "name": "Mundsburger Kanal"
+  }
  ],
  [
   "w211",
-  "w215"
+  "w215",
+  {
+   "name": "Alster"
+  }
  ],
  [
   "w215",
-  "w216"
+  "w216",
+  {
+   "name": "Alster"
+  }
  ],
  [
   "w216",
-  "w217"
+  "w217",
+  {
+   "name": "Alster"
+  }
  ],
  [
   "w229",
-  "w228"
+  "w228",
+  {
+   "name": "Herrengrabenfleet"
+  }
  ],
  [
   "w228",
-  "w227"
+  "w227",
+  {
+   "name": "Herrengrabenfleet"
+  }
  ],
  [
   "w227",
-  "w226"
+  "w226",
+  {
+   "name": "Herrengrabenfleet"
+  }
  ],
  [
   "w226",
-  "w225"
+  "w225",
+  {
+   "name": "Herrengrabenfleet"
+  }
  ],
  [
   "w225",
-  "w224"
+  "w224",
+  {
+   "name": "Herrengrabenfleet"
+  }
  ],
  [
   "w224",
-  "w223"
+  "w223",
+  {
+   "name": "Herrengrabenfleet"
+  }
  ],
  [
   "w223",
-  "w222"
+  "w222",
+  {
+   "name": "Herrengrabenfleet"
+  }
  ],
  [
   "w222",
-  "w221"
+  "w221",
+  {
+   "name": "Herrengrabenfleet"
+  }
  ],
  [
   "w221",
-  "w220"
+  "w220",
+  {
+   "name": "Herrengrabenfleet"
+  }
  ],
  [
   "w220",
-  "w219"
+  "w219",
+  {
+   "name": "Herrengrabenfleet"
+  }
  ],
  [
   "w219",
-  "w218"
+  "w218",
+  {
+   "name": "Herrengrabenfleet"
+  }
  ],
  [
   "w197",
-  "w196"
+  "w196",
+  {
+   "name": "Alsterfleet"
+  }
  ],
  [
   "w196",
-  "w195"
+  "w195",
+  {
+   "name": "Alsterfleet"
+  }
  ],
  [
   "w195",
-  "w194"
+  "w194",
+  {
+   "name": "Alsterfleet"
+  }
  ],
  [
   "w194",
-  "w193"
+  "w193",
+  {
+   "name": "Alsterfleet"
+  }
  ],
  [
   "w193",
-  "w192"
- ],
- [
   "w192",
-  "w191"
+  {
+   "name": "Schaartorschleuse",
+   "type": "lock",
+   "open": "6 - 18 Uhr"
+  }
  ],
  [
   "w191",
-  "w178"
+  "w178",
+  {
+   "name": "Alsterfleet"
+  }
  ],
  [
   "w191",
-  "w177"
+  "w177",
+  {
+   "name": "Alsterfleet"
+  }
  ],
  [
   "w246",
-  "w245"
+  "w245",
+  {
+   "name": "Sandtorhafen"
+  }
  ],
  [
   "w245",
-  "w244"
+  "w244",
+  {
+   "name": "Sandtorhafen"
+  }
  ],
  [
   "w244",
-  "w243"
+  "w243",
+  {
+   "name": "Sandtorhafen"
+  }
  ],
  [
   "w243",
-  "w242"
+  "w242",
+  {
+   "name": "Sandtorhafen"
+  }
  ],
  [
   "w242",
-  "w241"
+  "w241",
+  {
+   "name": "Sandtorhafen"
+  }
  ],
  [
   "w252",
-  "w251"
+  "w251",
+  {
+   "name": "Grasbrookhafen"
+  }
  ],
  [
   "w251",
-  "w250"
+  "w250",
+  {
+   "name": "Grasbrookhafen"
+  }
  ],
  [
   "w250",
-  "w248"
+  "w248",
+  {
+   "name": "Grasbrookhafen"
+  }
  ],
  [
   "w248",
-  "w249"
+  "w249",
+  {
+   "name": "Grasbrookhafen"
+  }
  ],
  [
   "w247",
-  "w248"
+  "w248",
+  {
+   "name": "Grasbrookhafen"
+  }
  ],
  [
   "w271",
-  "w270"
+  "w270",
+  {
+   "name": "Müggenburger Zollhafen"
+  }
  ],
  [
   "w270",
-  "w269"
+  "w269",
+  {
+   "name": "Müggenburger Zollhafen"
+  }
  ],
  [
   "w269",
-  "w268"
+  "w268",
+  {
+   "name": "Müggenburger Kanal"
+  }
  ],
  [
   "w268",
-  "w267"
+  "w267",
+  {
+   "name": "Müggenburger Kanal"
+  }
  ],
  [
   "w267",
-  "w266"
+  "w266",
+  {
+   "name": "Müggenburger Kanal"
+  }
  ],
  [
   "w266",
-  "w265"
+  "w265",
+  {
+   "name": "Müggenburger Kanal"
+  }
  ],
  [
   "w265",
-  "w264"
+  "w264",
+  {
+   "name": "Müggenburger Kanal"
+  }
  ],
  [
   "w264",
-  "w263"
+  "w263",
+  {
+   "name": "Müggenburger Kanal"
+  }
  ],
  [
   "w271",
-  "w272"
+  "w272",
+  {
+   "name": "Peutekanal"
+  }
  ],
  [
   "w272",
-  "w273"
+  "w273",
+  {
+   "name": "Peutekanal"
+  }
  ],
  [
   "w273",
   "w274",
   {
+   "name": "Hovekanal",
    "type": "barrier"
   }
  ],
  [
   "w274",
-  "w275"
+  "w275",
+  {
+   "name": "Hovekanal"
+  }
  ],
  [
   "w275",
-  "w276"
+  "w276",
+  {
+   "name": "Hovekanal"
+  }
  ],
  [
   "w276",
   "w266",
   {
+   "name": "Moorkanal",
    "type": "barrier"
   }
  ],
  [
   "w276",
-  "w277"
+  "w277",
+  {
+   "name": "Hovekanal"
+  }
  ],
  [
   "w277",
-  "w278"
+  "w278",
+  {
+   "name": "Hovekanal"
+  }
  ],
  [
   "w278",
-  "w279"
+  "w279",
+  {
+   "name": "Hovekanal"
+  }
  ],
  [
   "w279",
   "w263",
   {
+   "name": "Hovekanal",
    "type": "barrier"
   }
  ],
  [
   "w280",
-  "w281"
+  "w281",
+  {
+   "name": "Müggenburger Durchfahrt"
+  }
  ],
  [
   "w281",
-  "w282"
+  "w282",
+  {
+   "name": "Müggenburger Durchfahrt"
+  }
  ],
  [
   "w282",
-  "w283"
+  "w283",
+  {
+   "name": "Müggenburger Zollhafen"
+  }
  ],
  [
   "w283",
-  "w284"
+  "w284",
+  {
+   "name": "Müggenburger Zollhafen"
+  }
  ],
  [
   "w284",
-  "w285"
+  "w285",
+  {
+   "name": "Müggenburger Zollhafen"
+  }
  ],
  [
   "w285",
-  "w270"
+  "w270",
+  {
+   "name": "Müggenburger Zollhafen"
+  }
  ],
  [
   "w280",
-  "w286"
+  "w286",
+  {
+   "name": "Spreehafen"
+  }
  ],
  [
   "w286",
-  "w296"
+  "w296",
+  {
+   "name": "Spreehafen"
+  }
  ],
  [
   "w296",
-  "w295"
+  "w295",
+  {
+   "name": "Spreehafen"
+  }
  ],
  [
   "w295",
-  "w294"
+  "w294",
+  {
+   "name": "Spreehafen"
+  }
  ],
  [
   "w294",
-  "w293"
+  "w293",
+  {
+   "name": "Spreehafen"
+  }
  ],
  [
   "w293",
-  "w292"
+  "w292",
+  {
+   "name": "Spreehafen"
+  }
  ],
  [
   "w292",
-  "w291"
+  "w291",
+  {
+   "name": "Spreehafen"
+  }
  ],
  [
   "w291",
-  "w290"
+  "w290",
+  {
+   "name": "Veddelkanal"
+  }
  ],
  [
   "w290",
-  "w289"
+  "w289",
+  {
+   "name": "Veddelkanal"
+  }
  ],
  [
   "w289",
-  "w288"
+  "w288",
+  {
+   "name": "Veddelkanal"
+  }
  ],
  [
   "w288",
-  "w287"
+  "w287",
+  {
+   "name": "Veddelkanal"
+  }
  ],
  [
   "w287",
-  "w286"
+  "w286",
+  {
+   "name": "Veddelkanal"
+  }
  ],
  [
   "w299",
-  "w298"
+  "w298",
+  {
+   "name": "Ernst-August-Kanal"
+  }
  ],
  [
   "w298",
-  "w297"
+  "w297",
+  {
+   "name": "Ernst-August-Kanal"
+  }
  ],
  [
   "w291",
-  "w299"
+  "w299",
+  {
+   "name": "Klütjenfelder Hafen"
+  }
  ],
  [
   "w299",
-  "w305"
+  "w305",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w305",
-  "w303"
+  "w303",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w303",
-  "w304"
+  "w304",
+  {
+   "name": "Reiherstieg Schleusenfleet"
+  }
  ],
  [
   "w303",
-  "w302"
+  "w302",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w302",
-  "w301"
+  "w301",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w301",
-  "w300"
+  "w300",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w310",
-  "w309"
+  "w309",
+  {
+   "name": "Neuhöfer Kanal"
+  }
  ],
  [
   "w309",
-  "w308"
+  "w308",
+  {
+   "name": "Neuhöfer Kanal"
+  }
  ],
  [
   "w308",
-  "w307"
+  "w307",
+  {
+   "name": "Neuhöfer Kanal"
+  }
  ],
  [
   "w307",
-  "w306"
+  "w306",
+  {
+   "name": "Neuhöfer Kanal"
+  }
  ],
  [
   "w316",
-  "w315"
+  "w315",
+  {
+   "name": "Rethe"
+  }
  ],
  [
   "w315",
-  "w312"
+  "w312",
+  {
+   "name": "Rethe"
+  }
  ],
  [
   "w312",
-  "w311"
+  "w311",
+  {
+   "name": "Kattwykhafen"
+  }
  ],
  [
   "w312",
-  "w313"
+  "w313",
+  {
+   "name": "Blumensandhafen"
+  }
  ],
  [
   "w312",
-  "w314"
+  "w314",
+  {
+   "name": "Rethe"
+  }
  ],
  [
   "w326",
-  "w325"
+  "w325",
+  {
+   "name": "Travehafen"
+  }
  ],
  [
   "w325",
-  "w324"
+  "w324",
+  {
+   "name": "Travehafen"
+  }
  ],
  [
   "w324",
-  "w323"
+  "w323",
+  {
+   "name": "Ellerholzhafen"
+  }
  ],
  [
   "w323",
-  "w322"
+  "w322",
+  {
+   "name": "Ellerholzhafen"
+  }
  ],
  [
   "w322",
-  "w321"
+  "w321",
+  {
+   "name": "Ellerholzhafen"
+  }
  ],
  [
   "w321",
-  "w320"
+  "w320",
+  {
+   "name": "Roßhafen"
+  }
  ],
  [
   "w320",
-  "w319"
+  "w319",
+  {
+   "name": "Roßkanal"
+  }
  ],
  [
   "w319",
-  "w318"
+  "w318",
+  {
+   "name": "Roßkanal"
+  }
  ],
  [
   "w318",
-  "w317"
+  "w317",
+  {
+   "name": "Roßkanal"
+  }
  ],
  [
   "w327",
-  "w328"
+  "w328",
+  {
+   "name": "Kaiser-Wilhelm-Hafen"
+  }
  ],
  [
   "w328",
-  "w329"
+  "w329",
+  {
+   "name": "Kaiser-Wilhelm-Hafen"
+  }
  ],
  [
   "w327",
-  "w321"
+  "w321",
+  {
+   "name": "Vorhäfen"
+  }
  ],
  [
   "w330",
-  "w331"
+  "w331",
+  {
+   "name": "Vorhäfen"
+  }
  ],
  [
   "w331",
-  "w332"
+  "w332",
+  {
+   "name": "Kuhwerder Hafen"
+  }
  ],
  [
   "w332",
-  "w333"
+  "w333",
+  {
+   "name": "Kuhwerder Hafen"
+  }
  ],
  [
   "w334",
-  "w331"
+  "w331",
+  {
+   "name": "Vorhäfen"
+  }
  ],
  [
   "w344",
-  "w343"
+  "w343",
+  {
+   "name": "Steinwerder Kanal"
+  }
  ],
  [
   "w343",
-  "w342"
+  "w342",
+  {
+   "name": "Steinwerder Kanal"
+  }
  ],
  [
   "w342",
-  "w340"
+  "w340",
+  {
+   "name": "Steinwerder Kanal"
+  }
  ],
  [
   "w340",
-  "w341"
+  "w341",
+  {
+   "name": "Steinwerder Kanal"
+  }
  ],
  [
   "w340",
-  "w339"
+  "w339",
+  {
+   "name": "Norderloch"
+  }
  ],
  [
   "w339",
-  "w338"
+  "w338",
+  {
+   "name": "Norderloch"
+  }
  ],
  [
   "w338",
-  "w337"
+  "w337",
+  {
+   "name": "Fährkanal"
+  }
  ],
  [
   "w337",
-  "w336"
+  "w336",
+  {
+   "name": "Fährkanal"
+  }
  ],
  [
   "w336",
-  "w335"
+  "w335",
+  {
+   "name": "Fährkanal"
+  }
  ],
  [
   "w333",
-  "w345"
+  "w345",
+  {
+   "name": "Kuhwerder Hafen"
+  }
  ],
  [
   "w345",
-  "w343"
+  "w343",
+  {
+   "name": "Grevenhofkanal"
+  }
  ],
  [
   "w299",
-  "w348"
+  "w348",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w348",
-  "w347"
- ],
- [
   "w347",
-  "w346"
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w346",
-  "w343"
+  "w343",
+  {
+   "name": "Grevenhofkanal"
+  }
  ],
  [
   "w347",
-  "w349"
+  "w349",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w349",
-  "w346"
+  "w346",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w349",
-  "w350"
+  "w350",
+  {
+   "name": "Querkanal"
+  }
  ],
  [
   "w350",
-  "w351"
+  "w351",
+  {
+   "name": "Querkanal"
+  }
  ],
  [
   "w354",
-  "w353"
+  "w353",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w353",
-  "w352"
+  "w352",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w352",
-  "w346"
+  "w346",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w351",
-  "w355"
+  "w355",
+  {
+   "name": "Steinwerder Hafen"
+  }
  ],
  [
   "w355",
-  "w356"
+  "w356",
+  {
+   "name": "Steinwerder Hafen"
+  }
  ],
  [
   "w356",
-  "w357"
+  "w357",
+  {
+   "name": "Steinwerder Hafen"
+  }
  ],
  [
   "w323",
-  "w358"
+  "w358",
+  {
+   "name": "Ellerholzhafen"
+  }
  ],
  [
   "w358",
-  "w324"
+  "w324",
+  {
+   "name": "Travehafen"
+  }
  ],
  [
   "w358",
-  "w299"
+  "w299",
+  {
+   "name": "Ellerholzschleuse",
+   "type": "lock",
+   "open": "durchgehend geöffnet"
+  }
  ],
  [
   "w314",
-  "w362"
+  "w362",
+  {
+   "name": "Rethe"
+  }
  ],
  [
   "w362",
-  "w361"
+  "w361",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w361",
-  "w360"
+  "w360",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w360",
-  "w359"
+  "w359",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w359",
-  "w300"
+  "w300",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w373",
-  "w372"
+  "w372",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w372",
-  "w371"
+  "w371",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w371",
-  "w370"
+  "w370",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w370",
-  "w369"
+  "w369",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w369",
-  "w368"
+  "w368",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w368",
-  "w367"
+  "w367",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w367",
-  "w366"
+  "w366",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w366",
-  "w365"
+  "w365",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w365",
-  "w364"
+  "w364",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w364",
-  "w363"
+  "w363",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w363",
-  "w362"
+  "w362",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w334",
-  "w374"
+  "w374",
+  {
+   "name": "Vorhäfen"
+  }
  ],
  [
   "w374",
-  "w331"
+  "w331",
+  {
+   "name": "Vorhäfen"
+  }
  ],
  [
   "w374",
-  "w375"
+  "w375",
+  {
+   "name": "Werfthafen"
+  }
  ],
  [
   "w376",
-  "w377"
+  "w377",
+  {
+   "name": "Guanofleet"
+  }
  ],
  [
   "w378",
-  "w379"
+  "w379",
+  {
+   "name": "Dock I / II"
+  }
  ],
  [
   "w379",
-  "w352"
+  "w352",
+  {
+   "name": "Dock I / II"
+  }
  ],
  [
   "w386",
-  "w385"
+  "w385",
+  {
+   "name": "Hansahafen"
+  }
  ],
  [
   "w385",
-  "w384"
+  "w384",
+  {
+   "name": "Hansahafen"
+  }
  ],
  [
   "w384",
-  "w383"
+  "w383",
+  {
+   "name": "Hansahafen"
+  }
  ],
  [
   "w383",
-  "w382"
+  "w382",
+  {
+   "name": "Hansahafen"
+  }
  ],
  [
   "w382",
-  "w381"
+  "w381",
+  {
+   "name": "Hansahafen"
+  }
  ],
  [
   "w381",
-  "w380"
+  "w380",
+  {
+   "name": "Hansahafen"
+  }
  ],
  [
   "w387",
-  "w388"
+  "w388",
+  {
+   "name": "Südwesthafen"
+  }
  ],
  [
   "w388",
-  "w389"
+  "w389",
+  {
+   "name": "Südwesthafen"
+  }
  ],
  [
   "w389",
-  "w380"
+  "w380",
+  {
+   "name": "Hansahafen"
+  }
  ],
  [
   "w380",
-  "w388"
+  "w388",
+  {
+   "name": "Hansahafen"
+  }
  ],
  [
   "w389",
-  "w6"
+  "w6",
+  {
+   "name": "Südwesthafen/Hansahafen"
+  }
  ],
  [
   "w6",
-  "w5"
+  "w5",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w5",
-  "w390"
+  "w390",
+  {
+   "name": "Segelschiffhafen"
+  }
  ],
  [
   "w390",
-  "w391"
+  "w391",
+  {
+   "name": "Segelschiffhafen"
+  }
  ],
  [
   "w386",
-  "w400"
+  "w400",
+  {
+   "name": "Hansahafen"
+  }
  ],
  [
   "w400",
-  "w399"
+  "w399",
+  {
+   "name": "Saalehafen"
+  }
  ],
  [
   "w399",
-  "w398"
+  "w398",
+  {
+   "name": "Saalehafen"
+  }
  ],
  [
   "w398",
-  "w397"
+  "w397",
+  {
+   "name": "Saalehafen"
+  }
  ],
  [
   "w397",
-  "w396"
+  "w396",
+  {
+   "name": "Moldauhafen"
+  }
  ],
  [
   "w396",
-  "w395"
+  "w395",
+  {
+   "name": "Moldauhafen"
+  }
  ],
  [
   "w395",
-  "w394"
+  "w394",
+  {
+   "name": "Moldauhafen"
+  }
  ],
  [
   "w394",
-  "w393"
+  "w393",
+  {
+   "name": "Moldauhafen"
+  }
  ],
  [
   "w393",
-  "w392"
+  "w392",
+  {
+   "name": "Moldauhafen"
+  }
  ],
  [
   "w392",
-  "w4"
+  "w4",
+  {
+   "name": "Moldauhafen"
+  }
  ],
  [
   "w5",
-  "w4"
+  "w4",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w402",
-  "w3"
+  "w3",
+  {
+   "name": "Marktkanal"
+  }
  ],
  [
   "w3",
-  "w2"
+  "w2",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w4",
-  "w407"
+  "w407",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w407",
-  "w406"
+  "w406",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w406",
-  "w405"
+  "w405",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w405",
-  "w404"
+  "w404",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w404",
-  "w403"
+  "w403",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w403",
-  "w3"
+  "w3",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w273",
-  "w409"
+  "w409",
+  {
+   "name": "Peutekanal"
+  }
  ],
  [
   "w409",
-  "w410"
+  "w410",
+  {
+   "name": "Peutekanal"
+  }
  ],
  [
   "w2",
-  "w414"
+  "w414",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w414",
-  "w410"
+  "w410",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w410",
-  "w411"
+  "w411",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w411",
-  "w412"
+  "w412",
+  {
+   "name": "Peutehafen"
+  }
  ],
  [
   "w412",
-  "w413"
+  "w413",
+  {
+   "name": "Peutehafen"
+  }
  ],
  [
   "w411",
-  "w1"
+  "w1",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w415",
-  "w12"
- ],
- [
   "w12",
-  "w13"
+  {
+   "name": "Holzhafen"
+  }
  ],
  [
   "w432",
-  "w431"
+  "w431",
+  {
+   "name": "Kreetsand"
+  }
  ],
  [
   "w431",
-  "w430"
+  "w430",
+  {
+   "name": "Kreetsand"
+  }
  ],
  [
   "w430",
-  "w429"
+  "w429",
+  {
+   "name": "Kreetsand"
+  }
  ],
  [
   "w429",
-  "w428"
+  "w428",
+  {
+   "name": "Kreetsand"
+  }
  ],
  [
   "w428",
-  "w427"
+  "w427",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w427",
-  "w426"
+  "w426",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w426",
-  "w425"
+  "w425",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w425",
-  "w424"
+  "w424",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w424",
-  "w423"
+  "w423",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w423",
-  "w422"
+  "w422",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w422",
-  "w421"
+  "w421",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w421",
-  "w420"
+  "w420",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w420",
-  "w419"
+  "w419",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w419",
-  "w418"
+  "w418",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w418",
-  "w417"
+  "w417",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w417",
-  "w416"
+  "w416",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w416",
-  "w1"
+  "w1",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w7",
-  "w433"
+  "w433",
+  {
+   "name": "Billwerder Bucht"
+  }
  ],
  [
   "w433",
-  "w416"
+  "w416",
+  {
+   "name": "Billwerder Bucht"
+  }
  ],
  [
   "w464",
@@ -5421,171 +6725,299 @@
  ],
  [
   "w317",
-  "w471"
+  "w471",
+  {
+   "name": "Köhlbrand"
+  }
  ],
  [
   "w471",
-  "w470"
+  "w470",
+  {
+   "name": "Köhlbrand"
+  }
  ],
  [
   "w470",
-  "w469"
+  "w469",
+  {
+   "name": "Köhlbrand"
+  }
  ],
  [
   "w469",
-  "w468"
+  "w468",
+  {
+   "name": "Köhlbrand"
+  }
  ],
  [
   "w468",
-  "w467"
+  "w467",
+  {
+   "name": "Köhlbrand"
+  }
  ],
  [
   "w467",
-  "w466"
+  "w466",
+  {
+   "name": "Köhlbrand"
+  }
  ],
  [
   "w466",
-  "w465"
+  "w465",
+  {
+   "name": "Köhlbrand"
+  }
  ],
  [
   "w317",
-  "w310"
+  "w310",
+  {
+   "name": "Köhlbrand"
+  }
  ],
  [
   "w472",
-  "w473"
+  "w473",
+  {
+   "name": "Sandauhafen"
+  }
  ],
  [
   "w473",
-  "w474"
+  "w474",
+  {
+   "name": "Sandauhafen"
+  }
  ],
  [
   "w474",
-  "w310"
+  "w310",
+  {
+   "name": "Köhlbrand"
+  }
  ],
  [
   "w474",
-  "w316"
+  "w316",
+  {
+   "name": "Rethe"
+  }
  ],
  [
   "w483",
-  "w482"
+  "w482",
+  {
+   "name": "Hohe-Schaar-Hafen"
+  }
  ],
  [
   "w482",
-  "w481"
+  "w481",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w481",
-  "w480"
+  "w480",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w480",
-  "w479"
+  "w479",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w479",
-  "w478"
+  "w478",
+  {
+   "name": "Köhlbrand"
+  }
  ],
  [
   "w478",
-  "w477"
+  "w477",
+  {
+   "name": "Köhlbrand"
+  }
  ],
  [
   "w477",
-  "w476"
+  "w476",
+  {
+   "name": "Köhlbrand"
+  }
  ],
  [
   "w476",
-  "w475"
+  "w475",
+  {
+   "name": "Köhlbrand"
+  }
  ],
  [
   "w475",
-  "w474"
+  "w474",
+  {
+   "name": "Köhlbrand"
+  }
  ],
  [
   "w484",
-  "w485"
+  "w485",
+  {
+   "name": "Kohlekraftwerk Moorburg"
+  }
  ],
  [
   "w485",
-  "w486"
+  "w486",
+  {
+   "name": "Kohlekraftwerk Moorburg"
+  }
  ],
  [
   "w486",
-  "w487"
+  "w487",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w487",
-  "w488"
+  "w488",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w488",
-  "w482"
+  "w482",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w489",
-  "w490"
+  "w490",
+  {
+   "name": "Seehafen 4",
+   "type": "barrier"
+  }
  ],
  [
   "w490",
-  "w491"
+  "w491",
+  {
+   "name": "Seehafen 4",
+   "type": "barrier"
+  }
  ],
  [
   "w491",
-  "w492"
+  "w492",
+  {
+   "name": "Seehafen 4"
+  }
  ],
  [
   "w492",
-  "w486"
+  "w486",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w493",
-  "w494"
+  "w494",
+  {
+   "name": "Seehafen 3"
+  }
  ],
  [
   "w494",
-  "w495"
+  "w495",
+  {
+   "name": "Seehafen 3"
+  }
  ],
  [
   "w495",
-  "w496"
+  "w496",
+  {
+   "name": "Seehafen 3"
+  }
  ],
  [
   "w496",
-  "w492"
+  "w492",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w497",
-  "w498"
+  "w498",
+  {
+   "name": "Seehafen 2"
+  }
  ],
  [
   "w498",
-  "w499"
+  "w499",
+  {
+   "name": "Seehafen 2"
+  }
  ],
  [
   "w499",
-  "w500"
+  "w500",
+  {
+   "name": "Seehafen 2"
+  }
  ],
  [
   "w500",
-  "w496"
+  "w496",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w501",
-  "w502"
+  "w502",
+  {
+   "name": "Seehafen 1"
+  }
  ],
  [
   "w502",
-  "w503"
+  "w503",
+  {
+   "name": "Seehafen 1"
+  }
  ],
  [
   "w503",
-  "w504"
+  "w504",
+  {
+   "name": "Seehafen 1"
+  }
  ],
  [
   "w504",
-  "w500"
+  "w500",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w539",
@@ -5593,159 +7025,276 @@
  ],
  [
   "w507",
-  "w508"
+  "w508",
+  {
+   "name": "Harburger Holzhafen"
+  }
  ],
  [
   "w508",
-  "w509"
+  "w509",
+  {
+   "name": "Harburger Holzhafen"
+  }
  ],
  [
   "w509",
-  "w510"
+  "w510",
+  {
+   "name": "Harburger Holzhafen"
+  }
  ],
  [
   "w505",
-  "w506"
+  "w506",
+  {
+   "name": "Ziegelwiesenkanal"
+  }
  ],
  [
   "w506",
-  "w507"
+  "w507",
+  {
+   "name": "Ziegelwiesenkanal"
+  }
  ],
  [
   "w507",
-  "w511"
+  "w511",
+  {
+   "name": "Lotsekanal"
+  }
  ],
  [
   "w511",
-  "w512"
+  "w512",
+  {
+   "name": "Lotsekanal"
+  }
  ],
  [
   "w512",
-  "w513"
+  "w513",
+  {
+   "name": "Kaufhauskanal"
+  }
  ],
  [
   "w513",
-  "w514"
+  "w514",
+  {
+   "name": "Kaufhauskanal"
+  }
  ],
  [
   "w514",
-  "w515"
+  "w515",
+  {
+   "name": "Kaufhauskanal"
+  }
  ],
  [
   "w512",
-  "w516"
+  "w516",
+  {
+   "name": "Lotsekanal"
+  }
  ],
  [
   "w516",
-  "w517"
+  "w517",
+  {
+   "name": "Westlicher Bahnhofskanal"
+  }
  ],
  [
   "w517",
-  "w518"
+  "w518",
+  {
+   "name": "Westlicher Bahnhofskanal"
+  }
  ],
  [
   "w518",
-  "w519"
+  "w519",
+  {
+   "name": "Westlicher Bahnhofskanal"
+  }
  ],
  [
   "w516",
-  "w520"
+  "w520",
+  {
+   "name": "Verkehrshafen"
+  }
  ],
  [
   "w520",
-  "w521"
+  "w521",
+  {
+   "name": "Verkehrshafen"
+  }
  ],
  [
   "w521",
-  "w522"
+  "w522",
+  {
+   "name": "Östlicher Bahnhofskanal"
+  }
  ],
  [
   "w522",
-  "w523"
+  "w523",
+  {
+   "name": "Östlicher Bahnhofskanal"
+  }
  ],
  [
   "w523",
-  "w524"
+  "w524",
+  {
+   "name": "Östlicher Bahnhofskanal"
+  }
  ],
  [
   "w521",
-  "w525"
+  "w525",
+  {
+   "name": "Verkehrshafen"
+  }
  ],
  [
   "w525",
-  "w526"
+  "w526",
+  {
+   "name": "Verkehrshafen"
+  }
  ],
  [
   "w526",
-  "w528"
+  "w528",
+  {
+   "name": "Harburger Hafen"
+  }
  ],
  [
   "w528",
-  "w529"
+  "w529",
+  {
+   "name": "Östlicher Binnenhafen"
+  }
  ],
  [
   "w529",
-  "w530"
+  "w530",
+  {
+   "name": "Östlicher Binnenhafen"
+  }
  ],
  [
   "w528",
-  "w527"
+  "w527",
+  {
+   "name": "Harburger Hafen"
+  }
  ],
  [
   "w527",
-  "w531"
+  "w531",
+  {
+   "name": "Harburger Hafen"
+  }
  ],
  [
   "w531",
-  "w532"
+  "w532",
+  {
+   "name": "Harburger Hafen"
+  }
  ],
  [
   "w532",
-  "w533"
+  "w533",
+  {
+   "name": "Harburger Hafen"
+  }
  ],
  [
   "w533",
-  "w534"
+  "w534",
+  {
+   "name": "Überwinterungshafen"
+  }
  ],
  [
   "w534",
-  "w535"
+  "w535",
+  {
+   "name": "Überwinterungshafen"
+  }
  ],
  [
   "w535",
-  "w536"
+  "w536",
+  {
+   "name": "Überwinterungshafen"
+  }
  ],
  [
   "w536",
-  "w537"
+  "w537",
+  {
+   "name": "Harburger Werfthafen"
+  }
  ],
  [
   "w537",
-  "w538"
+  "w538",
+  {
+   "name": "Harburger Werfthafen"
+  }
  ],
  [
   "w526",
-  "w540"
+  "w540",
+  {
+   "name": "Verkehrshafen"
+  }
  ],
  [
   "w540",
-  "w541"
+  "w541",
+  {
+   "name": "Schiffsgraben"
+  }
  ],
  [
   "w541",
-  "w542"
+  "w542",
+  {
+   "name": "Schiffsgraben"
+  }
  ],
  [
   "w542",
-  "w543"
+  "w543",
+  {
+   "name": "Schiffsgraben"
+  }
  ],
  [
   "w504",
-  "w547"
+  "w547",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w547",
-  "w545"
+  "w545",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w546",
@@ -5753,203 +7302,356 @@
  ],
  [
   "w547",
-  "w373"
+  "w373",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w545",
-  "w544"
+  "w544",
+  {
+   "name": "Harburger Hafenschleuse"
+  }
  ],
  [
   "w544",
-  "w540"
+  "w540",
+  {
+   "name": "Harburger Hafenschleuse",
+   "type": "lock",
+   "open": "Durchgehend"
+  }
  ],
  [
   "w548",
-  "w549"
+  "w549",
+  {
+   "name": "Rugenberger Hafen"
+  }
  ],
  [
   "w549",
-  "w550"
+  "w550",
+  {
+   "name": "Rugenberger Hafen"
+  }
  ],
  [
   "w550",
-  "w551"
+  "w551",
+  {
+   "name": "Rugenberger Schleuse",
+   "type": "barrier"
+  }
  ],
  [
   "w551",
-  "w317"
+  "w317",
+  {
+   "name": "Rugenberger Schleuse"
+  }
  ],
  [
   "w545",
-  "w553"
+  "w553",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w553",
-  "w552"
+  "w552",
+  {
+   "name": "Yachthafen"
+  }
  ],
  [
   "w555",
-  "w554"
+  "w554",
+  {
+   "name": "Yachthafen"
+  }
  ],
  [
   "w554",
-  "w553"
+  "w553",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w553",
-  "w556"
+  "w556",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w556",
-  "w545"
+  "w545",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w556",
-  "w554"
+  "w554",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w554",
-  "w557"
+  "w557",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w557",
-  "w558"
+  "w558",
+  {
+   "name": "Diamantgraben"
+  }
  ],
  [
   "w558",
-  "w559"
+  "w559",
+  {
+   "name": "Diamantgraben"
+  }
  ],
  [
   "w559",
-  "w560"
+  "w560",
+  {
+   "name": "Diamantgraben"
+  }
  ],
  [
   "w560",
-  "w561"
+  "w561",
+  {
+   "name": "Diamantgraben"
+  }
  ],
  [
   "w561",
-  "w562"
+  "w562",
+  {
+   "name": "Schewwnssand-Hauptdeich"
+  }
  ],
  [
   "w562",
-  "w563"
+  "w563",
+  {
+   "name": "Schewwnssand-Hauptdeich"
+  }
  ],
  [
   "w561",
-  "w564"
+  "w564",
+  {
+   "name": "Schewwnssand-Hauptdeich"
+  }
  ],
  [
   "w564",
-  "w565"
+  "w565",
+  {
+   "name": "Schewwnssand-Hauptdeich"
+  }
  ],
  [
   "w565",
-  "w557"
+  "w557",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w557",
-  "w556"
+  "w556",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w569",
-  "w568"
+  "w568",
+  {
+   "name": "Süderelbe (Nebengewässer)"
+  }
  ],
  [
   "w568",
-  "w567"
+  "w567",
+  {
+   "name": "Süderelbe (Nebengewässer)"
+  }
  ],
  [
   "w567",
-  "w566"
+  "w566",
+  {
+   "name": "Süderelbe (Nebengewässer)"
+  }
  ],
  [
   "w566",
-  "w565"
+  "w565",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w574",
-  "w573"
+  "w573",
+  {
+   "name": "Hafen Holstenkaten"
+  }
  ],
  [
   "w573",
-  "w572"
+  "w572",
+  {
+   "name": "Hafen Holstenkaten"
+  }
  ],
  [
   "w572",
-  "w571"
+  "w571",
+  {
+   "name": "Hafen Holstenkaten"
+  }
  ],
  [
   "w571",
-  "w570"
+  "w570",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w570",
-  "w566"
+  "w566",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w571",
-  "w586"
+  "w586",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w586",
-  "w585"
+  "w585",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w586",
-  "w576"
+  "w576",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w576",
-  "w577"
+  "w577",
+  {
+   "name": "Gemeinschaftliche Wettern"
+  }
  ],
  [
   "w577",
-  "w578"
+  "w578",
+  {
+   "name": "Gemeinschaftliche Wettern"
+  }
  ],
  [
   "w578",
-  "w579"
+  "w579",
+  {
+   "name": "Gemeinschaftliche Wettern"
+  }
  ],
  [
   "w579",
-  "w580"
+  "w580",
+  {
+   "name": "Gemeinschaftliche Wettern"
+  }
  ],
  [
   "w580",
-  "w587"
+  "w587",
+  {
+   "name": "Gemeinschaftliche Wettern"
+  }
  ],
  [
   "w587",
-  "w581"
+  "w581",
+  {
+   "name": "Gemeinschaftliche Wettern"
+  }
  ],
  [
   "w581",
-  "w582"
+  "w582",
+  {
+   "name": "Gemeinschaftliche Wettern"
+  }
  ],
  [
   "w576",
-  "w575"
+  "w575",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w575",
-  "w583"
+  "w583",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w583",
-  "w584"
+  "w584",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w593",
-  "w592"
+  "w592",
+  {
+   "name": "Süderelbe (Nebengewässer)"
+  }
  ],
  [
   "w592",
-  "w591"
+  "w591",
+  {
+   "name": "Süderelbe (Nebengewässer)"
+  }
  ],
  [
   "w591",
-  "w590"
+  "w590",
+  {
+   "name": "Süderelbe (Nebengewässer)"
+  }
  ],
  [
   "w590",
@@ -5957,483 +7659,822 @@
  ],
  [
   "w589",
-  "w588"
+  "w588",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w588",
-  "w575"
+  "w575",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w589",
-  "w594"
+  "w594",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w594",
-  "w595"
+  "w595",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w595",
-  "w596"
+  "w596",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w596",
-  "w597"
+  "w597",
+  {
+   "name": "Heuckenlock"
+  }
  ],
  [
   "w597",
-  "w598"
+  "w598",
+  {
+   "name": "Heuckenlock"
+  }
  ],
  [
   "w596",
-  "w599"
+  "w599",
+  {
+   "name": "Heuckenlock"
+  }
  ],
  [
   "w599",
-  "w597"
+  "w597",
+  {
+   "name": "Heuckenlock"
+  }
  ],
  [
   "w599",
-  "w600"
+  "w600",
+  {
+   "name": "Heuckenlock"
+  }
  ],
  [
   "w600",
-  "w601"
+  "w601",
+  {
+   "name": "Heuckenlock"
+  }
  ],
  [
   "w601",
-  "w602"
+  "w602",
+  {
+   "name": "Heuckenlock"
+  }
  ],
  [
   "w602",
-  "w603"
+  "w603",
+  {
+   "name": "Heuckenlock"
+  }
  ],
  [
   "w603",
-  "w604"
+  "w604",
+  {
+   "name": "Heuckenlock"
+  }
  ],
  [
   "w428",
-  "w634"
+  "w634",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w634",
-  "w633"
+  "w633",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w633",
-  "w632"
+  "w632",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w632",
-  "w631"
+  "w631",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w631",
-  "w630"
+  "w630",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w630",
-  "w629"
+  "w629",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w629",
-  "w628"
+  "w628",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w628",
-  "w627"
+  "w627",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w627",
-  "w626"
+  "w626",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w626",
-  "w625"
+  "w625",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w625",
-  "w624"
+  "w624",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w624",
-  "w623"
+  "w623",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w623",
-  "w622"
+  "w622",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w622",
-  "w621"
+  "w621",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w621",
-  "w620"
+  "w620",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w620",
-  "w619"
+  "w619",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w619",
-  "w618"
+  "w618",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w618",
-  "w617"
+  "w617",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w617",
-  "w616"
+  "w616",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w616",
-  "w615"
+  "w615",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w615",
-  "w614"
+  "w614",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w614",
-  "w613"
+  "w613",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w613",
-  "w612"
+  "w612",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w612",
-  "w611"
+  "w611",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w611",
-  "w610"
+  "w610",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w610",
-  "w609"
+  "w609",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w609",
-  "w608"
+  "w608",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w608",
-  "w606"
+  "w606",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w606",
-  "w607"
+  "w607",
+  {
+   "name": "Neulander Yachtclub"
+  }
  ],
  [
   "w606",
-  "w605"
+  "w605",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w605",
-  "w596"
+  "w596",
+  {
+   "name": "Süderelbe"
+  }
  ],
  [
   "w549",
-  "w643"
+  "w643",
+  {
+   "name": "Rugenberger Hafen"
+  }
  ],
  [
   "w643",
-  "w642"
+  "w642",
+  {
+   "name": "Rugenberger Hafen"
+  }
  ],
  [
   "w642",
-  "w635"
+  "w635",
+  {
+   "name": "Waltershofer Hafen"
+  }
  ],
  [
   "w635",
-  "w636"
+  "w636",
+  {
+   "name": "Waltershofer Hafen"
+  }
  ],
  [
   "w636",
-  "w637"
+  "w637",
+  {
+   "name": "Waltershofer Hafen"
+  }
  ],
  [
   "w637",
-  "w638"
+  "w638",
+  {
+   "name": "Parkhafen"
+  }
  ],
  [
   "w638",
-  "w639"
+  "w639",
+  {
+   "name": "Petroleumhafen"
+  }
  ],
  [
   "w639",
-  "w640"
+  "w640",
+  {
+   "name": "Petroleumhafen"
+  }
  ],
  [
   "w638",
-  "w641"
+  "w641",
+  {
+   "name": "Parkhafen"
+  }
  ],
  [
   "w650",
-  "w649"
+  "w649",
+  {
+   "name": "Kohlfleet"
+  }
  ],
  [
   "w649",
-  "w648"
+  "w648",
+  {
+   "name": "Kohlfleet"
+  }
  ],
  [
   "w648",
-  "w647"
+  "w647",
+  {
+   "name": "Kohlfleet"
+  }
  ],
  [
   "w647",
-  "w646"
+  "w646",
+  {
+   "name": "Finkenwerder Vorhafen"
+  }
  ],
  [
   "w646",
-  "w645"
+  "w645",
+  {
+   "name": "Finkenwerder Vorhafen"
+  }
  ],
  [
   "w656",
-  "w655"
+  "w655",
+  {
+   "name": "Aue"
+  }
  ],
  [
   "w655",
-  "w654"
+  "w654",
+  {
+   "name": "Aue"
+  }
  ],
  [
   "w654",
-  "w653"
+  "w653",
+  {
+   "name": "Aue"
+  }
  ],
  [
   "w653",
-  "w652"
- ],
- [
   "w652",
-  "w651"
- ],
- [
-  "w651",
-  "w645"
- ],
- [
-  "w651",
-  "w644"
+  {
+   "name": "Aue"
+  }
  ],
  [
   "w656",
-  "w665"
+  "w665",
+  {
+   "name": "Alte Süderelbe"
+  }
  ],
  [
   "w665",
-  "w664"
+  "w664",
+  {
+   "name": "Alte Süderelbe"
+  }
  ],
  [
   "w664",
-  "w663"
+  "w663",
+  {
+   "name": "Alte Süderelbe"
+  }
  ],
  [
   "w663",
-  "w662"
+  "w662",
+  {
+   "name": "Alte Süderelbe"
+  }
  ],
  [
   "w662",
-  "w661"
+  "w661",
+  {
+   "name": "Alte Süderelbe"
+  }
  ],
  [
   "w661",
-  "w660"
+  "w660",
+  {
+   "name": "Alte Süderelbe"
+  }
  ],
  [
   "w660",
-  "w659"
+  "w659",
+  {
+   "name": "Alte Süderelbe"
+  }
  ],
  [
   "w659",
-  "w658"
+  "w658",
+  {
+   "name": "Alte Süderelbe"
+  }
  ],
  [
   "w658",
-  "w657"
+  "w657",
+  {
+   "name": "Alte Süderelbe"
+  }
  ],
  [
   "w6",
-  "w693"
+  "w693",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w693",
-  "w249"
+  "w249",
+  {
+   "name": "Grasbrookhafen"
+  }
  ],
  [
   "w357",
-  "w693"
+  "w693",
+  {
+   "name": "Steinwerder Hafen"
+  }
  ],
  [
   "w693",
-  "w692"
+  "w692",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w692",
-  "w247"
+  "w247",
+  {
+   "name": "Grasbrookhafen"
+  }
  ],
  [
   "w692",
-  "w690"
+  "w690",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w690",
-  "w354"
+  "w354",
+  {
+   "name": "Reiherstieg"
+  }
  ],
  [
   "w377",
-  "w689"
+  "w689",
+  {
+   "name": "Guanofleet"
+  }
  ],
  [
   "w689",
-  "w690"
+  "w690",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w690",
-  "w691"
+  "w691",
+  {
+   "name": "Binnenhafen"
+  }
  ],
  [
   "w691",
-  "w241"
+  "w241",
+  {
+   "name": "Sandtorhafen"
+  }
  ],
  [
   "w179",
-  "w230"
+  "w230",
+  {
+   "name": "Binnenhafen"
+  }
  ],
  [
   "w230",
-  "w691"
+  "w691",
+  {
+   "name": "Binnenhafen"
+  }
  ],
  [
   "w335",
-  "w687"
+  "w687",
+  {
+   "name": "Fährkanal"
+  }
  ],
  [
   "w687",
-  "w688"
+  "w688",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w688",
-  "w689"
+  "w689",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w685",
-  "w686"
+  "w686",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w686",
-  "w687"
+  "w687",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w685",
-  "w684"
+  "w684",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w684",
-  "w683"
+  "w683",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w683",
-  "w334"
+  "w334",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w334",
-  "w682"
+  "w682",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w682",
-  "w681"
+  "w681",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w681",
-  "w465"
+  "w465",
+  {
+   "name": "Köhlbrand"
+  }
  ],
  [
   "w681",
-  "w680"
+  "w680",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w680",
-  "w679"
+  "w679",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w679",
-  "w641"
+  "w641",
+  {
+   "name": "Parkhafen"
+  }
  ],
  [
   "w679",
-  "w678"
+  "w678",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w678",
-  "w676"
+  "w676",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w676",
-  "w650"
+  "w650",
+  {
+   "name": "Kohlfleet"
+  }
  ],
  [
   "w698",
-  "w699"
+  "w699",
+  {
+   "name": "Rüschkanal"
+  }
  ],
  [
   "w699",
-  "w700"
+  "w700",
+  {
+   "name": "Rüschkanal"
+  }
  ],
  [
   "w700",
-  "w701"
+  "w701",
+  {
+   "name": "Rüschkanal"
+  }
  ],
  [
   "w701",
-  "w702"
+  "w702",
+  {
+   "name": "Rüschkanal"
+  }
  ],
  [
   "w702",
-  "w703"
+  "w703",
+  {
+   "name": "Rüschkanal"
+  }
  ],
  [
   "w703",
-  "w704"
+  "w704",
+  {
+   "name": "Rüschkanal"
+  }
  ],
  [
   "w704",
-  "w705"
+  "w705",
+  {
+   "name": "Rüschkanal"
+  }
  ],
  [
   "w705",
-  "w706"
+  "w706",
+  {
+   "name": "Rüschkanal"
+  }
  ],
  [
   "w706",
-  "w675"
+  "w675",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w675",
-  "w677"
+  "w677",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w677",
-  "w697"
+  "w697",
+  {
+   "name": "Streendiekkanal"
+  }
  ],
  [
   "w697",
-  "w696"
+  "w696",
+  {
+   "name": "Streendiekkanal"
+  }
  ],
  [
   "w696",
-  "w695"
+  "w695",
+  {
+   "name": "Streendiekkanal"
+  }
  ],
  [
   "w695",
-  "w694"
+  "w694",
+  {
+   "name": "Streendiekkanal"
+  }
  ],
  [
   "w677",
-  "w676"
+  "w676",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w677",
@@ -6441,55 +8482,94 @@
  ],
  [
   "w711",
-  "w710"
+  "w710",
+  {
+   "name": "Teufelsbrucker Hafen"
+  }
  ],
  [
   "w710",
-  "w709"
+  "w709",
+  {
+   "name": "Teufelsbrucker Hafen"
+  }
  ],
  [
   "w709",
-  "w708"
+  "w708",
+  {
+   "name": "Teufelsbrucker Hafen"
+  }
  ],
  [
   "w708",
-  "w707"
+  "w707",
+  {
+   "name": "Teufelsbrucker Hafen"
+  }
  ],
  [
   "w706",
-  "w674"
+  "w674",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w674",
-  "w673"
+  "w673",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w673",
-  "w672"
+  "w672",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w672",
-  "w671"
+  "w671",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w671",
-  "w670"
+  "w670",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w670",
-  "w669"
+  "w669",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w669",
-  "w668"
+  "w668",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w668",
-  "w667"
+  "w667",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w667",
-  "w666"
+  "w666",
+  {
+   "name": "Norderelbe"
+  }
  ],
  [
   "w733",
@@ -6648,59 +8728,101 @@
  ],
  [
   "w776",
-  "w13"
+  "w13",
+  {
+   "name": "Alte Dover Elbe"
+  }
  ],
  [
   "w13",
-  "w775"
+  "w775",
+  {
+   "name": "Alte Dover Elbe"
+  }
  ],
  [
   "w775",
-  "w12"
+  "w12",
+  {
+   "name": "Holzhafen"
+  }
  ],
  [
   "w775",
-  "w774"
+  "w774",
+  {
+   "name": "Alte Dover Elbe"
+  }
  ],
  [
   "w774",
-  "w773"
+  "w773",
+  {
+   "name": "Alte Dover Elbe"
+  }
  ],
  [
   "w773",
-  "w772"
+  "w772",
+  {
+   "name": "Alte Dover Elbe"
+  }
  ],
  [
   "w772",
-  "w771"
+  "w771",
+  {
+   "name": "Alte Dover Elbe"
+  }
  ],
  [
   "w771",
-  "w770"
+  "w770",
+  {
+   "name": "Alte Dover Elbe"
+  }
  ],
  [
   "w9",
-  "w780"
+  "w780",
+  {
+   "name": "Billwerder Bucht"
+  }
  ],
  [
   "w780",
-  "w779"
+  "w779",
+  {
+   "name": "Billwerder Bucht"
+  }
  ],
  [
   "w779",
-  "w778"
+  "w778",
+  {
+   "name": "Billwerder Bucht"
+  }
  ],
  [
   "w778",
-  "w777"
+  "w777",
+  {
+   "name": "Billwerder Bucht"
+  }
  ],
  [
   "w777",
-  "w770"
+  "w770",
+  {
+   "name": "Alte Dover Elbe"
+  }
  ],
  [
   "w14",
-  "w777"
+  "w777",
+  {
+   "name": "Moorfleeter Kanal"
+  }
  ],
  [
   "w746",
@@ -6881,6 +9003,125 @@
  [
   "w783",
   "w769"
+ ],
+ [
+  "w807",
+  "w367",
+  {
+   "name": "Schluisgrovehafen"
+  }
+ ],
+ [
+  "w366",
+  "w807",
+  {
+   "name": "Schluisgrovehafen"
+  }
+ ],
+ [
+  "w363",
+  "w361",
+  {
+   "name": "Reiherstieg"
+  }
+ ],
+ [
+  "w808",
+  "w280",
+  {
+   "name": "Niederfelder-Durchfahrt"
+  }
+ ],
+ [
+  "w808",
+  "w400",
+  {
+   "name": "Niederfelder-Durchfahrt"
+  }
+ ],
+ [
+  "w38",
+  "w809",
+  {
+   "name": "Bille"
+  }
+ ],
+ [
+  "w809",
+  "w39",
+  {
+   "name": "Bille"
+  }
+ ],
+ [
+  "w136",
+  "w130",
+  {
+   "name": "Bille"
+  }
+ ],
+ [
+  "w69",
+  "w117",
+  {
+   "name": "Bille"
+  }
+ ],
+ [
+  "w228",
+  "w203",
+  {
+   "name": "Neuerwallfleet"
+  }
+ ],
+ [
+  "w192",
+  "w191",
+  {
+   "name": "Alsterfleet"
+  }
+ ],
+ [
+  "w208",
+  "w810",
+  {
+   "name": "Binnenalster"
+  }
+ ],
+ [
+  "w810",
+  "w209",
+  {
+   "name": "Alster"
+  }
+ ],
+ [
+  "w813",
+  "w645",
+  {
+   "name": "Dradenauhafen"
+  }
+ ],
+ [
+  "w645",
+  "w812",
+  {
+   "name": "Finkenwerder Vorhafen"
+  }
+ ],
+ [
+  "w812",
+  "w811",
+  {
+   "name": "Finkenwerder Vorhafen"
+  }
+ ],
+ [
+  "w811",
+  "w652",
+  {
+   "name": "Finkenwerder Vorhafen"
+  }
  ]
 ];
 
@@ -8405,16 +10646,29 @@ VB2#DE__508P# #H#Do#31.12.2026#22:16# 6.89 # #365#+ 1:00#  27171#   1#2461406.38
         graph = {};
         if(Object.keys(waypoints).length === 0) return;
         
+        // Knoten erstellen
         for (let id in waypoints) {
             graph[id] = { id: id, lat: waypoints[id][0], lng: waypoints[id][1], edges: [] };
         }
+        
+        // Kanten (Connections) verarbeiten
         connections.forEach(conn => {
             const a = conn[0];
             const b = conn[1];
+            
+            // HIER IST DIE ÄNDERUNG:
+            // Wir schauen in das Objekt an Stelle 2 (conn[2]) und holen .name
+            let name = "";
+            if (conn[2] && conn[2].name) {
+                name = conn[2].name;
+            }
+
             if(graph[a] && graph[b]) {
                 const dist = map.distance([graph[a].lat, graph[a].lng], [graph[b].lat, graph[b].lng]);
-                graph[a].edges.push({ target: b, dist: dist });
-                graph[b].edges.push({ target: a, dist: dist });
+                
+                // Name wird im Graph gespeichert, damit Routing ihn findet
+                graph[a].edges.push({ target: b, dist: dist, name: name });
+                graph[b].edges.push({ target: a, dist: dist, name: name });
             }
         });
     }
@@ -8430,11 +10684,11 @@ VB2#DE__508P# #H#Do#31.12.2026#22:16# 6.89 # #365#+ 1:00#  27171#   1#2461406.38
     }
 
     function calculateRoute(startLL, endLL) {
-        if(Object.keys(graph).length === 0) return [startLL, endLL];
+        if(Object.keys(graph).length === 0) return { path: [startLL, endLL], names: [] };
         
         const startId = findNearest(startLL);
         const endId = findNearest(endLL);
-        if(!startId || !endId || startId === endId) return [startLL, endLL];
+        if(!startId || !endId || startId === endId) return { path: [startLL, endLL], names: [] };
 
         let dists = {}, prev = {}, pq = [{id: startId, d:0}];
         for(let id in graph) dists[id] = Infinity;
@@ -8455,16 +10709,29 @@ VB2#DE__508P# #H#Do#31.12.2026#22:16# 6.89 # #365#+ 1:00#  27171#   1#2461406.38
             });
         }
 
-        let path = [], u = endId;
+        let path = [], names = [], u = endId;
+        
+        // Pfad und Namen rekonstruieren
         if(prev[u] || u === startId) {
-            while(u) { path.unshift(L.latLng(graph[u].lat, graph[u].lng)); u = prev[u]; }
+            while(u) { 
+                path.unshift(L.latLng(graph[u].lat, graph[u].lng));
+                
+                const p = prev[u];
+                if(p) {
+                    // Kante suchen, um den Namen zu finden
+                    const edge = graph[p].edges.find(e => e.target === u);
+                    names.unshift(edge ? edge.name : "");
+                }
+                u = p; 
+            }
         }
+        
         if(path.length > 0) {
-            path.unshift(startLL);
-            path.push(endLL);
-            return path;
+            path.unshift(startLL); names.unshift("ZUM START");
+            path.push(endLL); names.push("ZIELGEBIET");
+            return { path: path, names: names };
         } else {
-            return [startLL, endLL];
+            return { path: [startLL, endLL], names: [] };
         }
     }
 
@@ -8484,13 +10751,19 @@ VB2#DE__508P# #H#Do#31.12.2026#22:16# 6.89 # #365#+ 1:00#  27171#   1#2461406.38
         }
     }
 
+    // Globale Variable für die Namen hinzufügen (oben bei den anderen lets)
+    let navRouteNames = []; 
+
     function onMapClick(e) {
         if(document.getElementById('sar-modal').style.display === 'block') return;
         if(!myPos) { myPos = e.latlng; drawBoat(); }
 
         if(navMode) {
-            const path = calculateRoute(myPos, e.latlng);
-            navPath = path;
+            // RESULTAT IST JETZT EIN OBJEKT
+            const result = calculateRoute(myPos, e.latlng);
+            navPath = result.path;
+            navRouteNames = result.names; // Namen speichern
+            
             nextWpIndex = 1;
 
             routeLayer.clearLayers();
@@ -8501,6 +10774,9 @@ VB2#DE__508P# #H#Do#31.12.2026#22:16# 6.89 # #365#+ 1:00#  27171#   1#2461406.38
             autoCenter = true;
             document.getElementById('btn-center').classList.add('active');
             map.getContainer().style.cursor = '';
+            
+            // Sofort Update triggern
+            updateNavState();
         }
     }
 
@@ -8556,11 +10832,23 @@ VB2#DE__508P# #H#Do#31.12.2026#22:16# 6.89 # #365#+ 1:00#  27171#   1#2461406.38
         document.getElementById('hud-sog').innerText = currentSpeed.toFixed(1);
         document.getElementById('hud-cog').innerText = Math.round(boatHeading).toString().padStart(3,'0');
         
+        // --- NAMEN ANZEIGEN ---
+        // Wir nehmen den Namen des Segments, auf das wir gerade zusteuern
+        let roadName = "";
+        if(navRouteNames && navRouteNames[nextWpIndex-1]) {
+             roadName = navRouteNames[nextWpIndex-1];
+        }
+        // Falls leer, Platzhalter
+        document.getElementById('turn-street').innerText = roadName || "FAHRWASSER";
+
+
+        // Next WP Logic
         if(distToWp < 80) { 
              nextWpIndex++;
              if(nextWpIndex >= navPath.length) {
                  document.getElementById('turn-text').innerText = "ZIEL ERREICHT";
                  document.getElementById('turn-arrow').innerText = "🏁";
+                 document.getElementById('turn-street').innerText = "";
                  return;
              }
         }
